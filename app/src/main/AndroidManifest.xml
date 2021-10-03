@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.vano.myrestaurant">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyRestaurant">
+        <activity
+            android:name=".controller.activity.OrdersActivity"
+            android:exported="true"
+            android:parentActivityName=".controller.activity.MainActivity"/>
+        <activity
+            android:name=".controller.activity.FavoriteFoodActivity"
+            android:exported="true"
+            android:parentActivityName=".controller.activity.MainActivity" />
+        <activity
+            android:name=".controller.activity.OrderActivity"
+            android:exported="true"
+            android:parentActivityName=".controller.activity.MainActivity" />
+        <activity
+            android:name=".controller.activity.DrinkDetailActivity"
+            android:exported="true"
+            android:parentActivityName=".controller.activity.MainActivity" />
+        <activity
+            android:name=".controller.activity.FoodDetailActivity"
+            android:exported="true"
+            android:parentActivityName=".controller.activity.MainActivity" />
+        <activity
+            android:name=".controller.activity.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

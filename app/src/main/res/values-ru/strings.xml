@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Мой ресторан</string>
+
+    <string name="food_title">Еда</string>
+    <string name="drink_title">Напитки</string>
+    <string name="order_title">Заказ</string>
+    <string name="favorite_title">Любимая еда</string>
+
+    <string name="home_tab">Главная</string>
+    <string name="food_tab">Еда</string>
+    <string name="drink_tab">Напитки</string>
+
+    <string name="weight_measure_unit">г</string>
+    <string name="volume_measure_unit">мл</string>
+    <string name="create_order">Сделать заказ</string>
+    <string name="favorite">Любимая еда</string>
+    <string name="add_order">Добавить заказ</string>
+    <string name="add_to_favorite">Добавить в любимые</string>
+    <string name="created_by">сделано Иваном Приставкиным inc.</string>
+    <string name="open_string">Открыть выдвижную панель</string>
+    <string name="close_string">Закрыть выдвижную панель</string>
+    <string name="notification">My restaurant уведомление</string>
+    <string name="add_to_favorites">Еда была добавлена в любимые!</string>
+    <string name="delete_from_favorites">Еда была удалена из любимых!</string>
+    <string name="restaurant_image">Фото ресторана</string>
+    <string name="order_created">Заказ был создан</string>
+    <string name="undo">Отменить</string>
+    <string name="my_orders">Мои заказы</string>
+
+</resources>

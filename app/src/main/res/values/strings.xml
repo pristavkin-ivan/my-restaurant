@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">My Restaurant</string>
+
+    <string name="food_title">Food</string>
+    <string name="drink_title">Drink</string>
+    <string name="order_title">New Order</string>
+    <string name="favorite_title">Favorite food</string>
+    <string name="authorization_title">Authorization</string>
+
+    <string name="home_tab">Home</string>
+    <string name="food_tab">Food</string>
+    <string name="drink_tab">Drink</string>
+
+    <string name="weight_measure_unit">g</string>
+    <string name="volume_measure_unit">ml</string>
+    <string name="create_order">create order</string>
+    <string name="favorite">favorite dishes</string>
+    <string name="add_order">add order</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="created_by">created by Ivan Production inc.</string>
+    <string name="open_string">Open sliding panel</string>
+    <string name="close_string">Close sliding panel</string>
+    <string name="notification">My restaurant notification</string>
+    <string name="add_to_favorites">Food was added to favorites!</string>
+    <string name="delete_from_favorites">Food was deleted from favorites!</string>
+    <string name="restaurant_image">Photo of restaurant</string>
+    <string name="order_created">Order was created</string>
+    <string name="undo">Undo</string>
+    <string name="my_orders">My orders</string>
+
+</resources>
