@@ -1,6 +1,5 @@
 package com.vano.myrestaurant.controller.fragment
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,7 @@ import com.vano.myrestaurant.R
 
 class HomeFragment : Fragment() {
 
-    private lateinit var textAnimation: Animation
+    private var textAnimation: Animation? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,24 +34,9 @@ class HomeFragment : Fragment() {
         with(activity?.findViewById<Button>(R.id.animate)) {
 
             this?.setOnClickListener {
-
                 activity?.findViewById<TextView>(R.id.text1)?.startAnimation(textAnimation)
-
             }
         }
     }
-
-    /*private fun configureObjectAnimator(view: View) {
-        val animator = ObjectAnimator.ofFloat(
-            view,
-            View.TRANSLATION_X,
-            view.translationX,
-            view.translationX + 200f
-        )
-
-        animator.duration = 1000
-        animator.interpolator = BounceInterpolator()
-        animator.start()
-    }*/
 
 }

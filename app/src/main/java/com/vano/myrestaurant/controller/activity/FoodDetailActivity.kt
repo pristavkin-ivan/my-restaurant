@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.animation.AnimationSet
 import android.view.animation.LinearInterpolator
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -22,23 +21,37 @@ import com.vano.myrestaurant.model.entity.Food
 import com.vano.myrestaurant.model.service.FoodService
 import com.vano.myrestaurant.model.util.ActivityUtil.configureActionBar
 
-const val CHANNEL_ID = "5"
-
 class FoodDetailActivity : AppCompatActivity() {
 
-    private val foodService = FoodService(this)
+    private companion object {
+        const val ID = "id"
+        const val ZERO_VALUE = 0
+        const val NOTIFICATION_ID_10 = 10
+        const val NOTIFICATION_ID_11 = 11
+        const val CHANNEL_ID = "5"
+        const val DURATION_1000 = 1000L
+        const val DURATION_600 = 600L
+        const val DELTA_Y = 1900
+        const val CHANNEL_NAME = "chan"
+    }
 
-    private var foodId: Int = 0
+    private var foodService: FoodService? = null
+
+    private val foodId: Int
+        get() {
+            val intent = intent
+            return intent.getIntExtra(ID, ZERO_VALUE)
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_food_detail1)
 
-        foodId = intent.getIntExtra("id", 0)
+        foodService = FoodService(this)
 
         configureActionBar(this, getString(R.string.food_title))
 
-        setFoodInfo(foodService.read(foodId))
+        foodService?.read(foodId)?.let { setFoodInfo(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -83,7 +96,7 @@ class FoodDetailActivity : AppCompatActivity() {
         val notificationManger = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         createNotificationChannel(notificationManger)
-        handleUserClick(checkBox1, notificationManger, foodService.read(foodId))
+        handleUserClick(checkBox1, notificationManger, foodService?.read(foodId))
     }
 
     private fun handleUserClick(
@@ -92,14 +105,14 @@ class FoodDetailActivity : AppCompatActivity() {
         food: Food? = null
     ) {
         if (checkBox1.isChecked) {
-            foodService.addToFavorite(foodId)
+            foodService?.addToFavorite(foodId)
             setAnimation(food?.resourceId ?: R.drawable.ic_done_white_24dp)
             notificationManger
-                .notify(10, buildNotification(getString(R.string.add_to_favorites)))
+                .notify(NOTIFICATION_ID_10, buildNotification(getString(R.string.add_to_favorites)))
         } else {
-            foodService.deleteFromFavorite(foodId)
+            foodService?.deleteFromFavorite(foodId)
             notificationManger
-                .notify(11, buildNotification(getString(R.string.delete_from_favorites)))
+                .notify(NOTIFICATION_ID_11, buildNotification(getString(R.string.delete_from_favorites)))
         }
     }
 
@@ -108,7 +121,7 @@ class FoodDetailActivity : AppCompatActivity() {
 
         val animatorSet = AnimatorSet()
 
-        animatorSet.duration = 600
+        animatorSet.duration = DURATION_600
         animatorSet.interpolator = LinearInterpolator()
 
         animatorSet.playTogether(yAnimator, alfaAnimator)
@@ -120,7 +133,7 @@ class FoodDetailActivity : AppCompatActivity() {
             this,
             View.TRANSLATION_Y,
             translationY,
-            translationY - 1900
+            translationY - DELTA_Y
         )
 
     private val View.alfaAnimator: ObjectAnimator
@@ -128,7 +141,7 @@ class FoodDetailActivity : AppCompatActivity() {
             this,
             View.ALPHA,
             alpha,
-            0f
+            ZERO_VALUE.toFloat()
         )
 
     private fun createNotificationChannel(notificationManger: NotificationManager) {
@@ -136,21 +149,21 @@ class FoodDetailActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannel = NotificationChannel(
                 CHANNEL_ID,
-                "chan",
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManger.createNotificationChannel(notificationChannel)
         }
     }
 
-    private fun buildNotification(text: String): Notification? {
+    private fun buildNotification(text: String): Notification {
         val builder: NotificationCompat.Builder =
             NotificationCompat.Builder(this, CHANNEL_ID)
         builder.setContentTitle(getString(R.string.notification))
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setVibrate(longArrayOf(0, 1000))
+            .setVibrate(longArrayOf(ZERO_VALUE.toLong(), DURATION_1000))
             .setAutoCancel(true)
             .setContentIntent(createPendingIntent())
         return builder.build()
@@ -160,7 +173,7 @@ class FoodDetailActivity : AppCompatActivity() {
     private fun createPendingIntent(): PendingIntent? {
         val intent = Intent(this, FavoriteFoodActivity::class.java)
         return PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT
+            this, ZERO_VALUE, intent, PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 }

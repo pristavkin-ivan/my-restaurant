@@ -17,23 +17,27 @@ class DrinkDetailActivity : AppCompatActivity() {
 
     companion object {
         const val ID = "id"
+        const val DEFAULT_ID_VALUE = 0
     }
 
     private val extraId: Int
         get() {
             val intent = intent
-            return intent.getIntExtra(ID, 0)
+            return intent.getIntExtra(ID, DEFAULT_ID_VALUE)
         }
 
-    private val drinkService: DrinkService = DrinkService(this)
+    private var drinkService: DrinkService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drink_detail1)
 
+        drinkService = DrinkService(this)
+
         ActivityUtil.configureActionBar(this, getString(R.string.drink_title))
-        val drink = drinkService.read(extraId)
-        setActivityInfo(drink)
+        val drink = drinkService?.read(extraId)
+
+        drink?.let {  setActivityInfo(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -61,6 +65,7 @@ class DrinkDetailActivity : AppCompatActivity() {
         val name = findViewById<TextView>(R.id.name)
         val description = findViewById<TextView>(R.id.description)
         val volume = findViewById<TextView>(R.id.volume)
+
         photo.setImageResource(drink.resourceID)
         photo.contentDescription = drink.name
         name.text = drink.name

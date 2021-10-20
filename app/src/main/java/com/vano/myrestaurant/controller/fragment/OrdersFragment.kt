@@ -10,7 +10,7 @@ import androidx.fragment.app.ListFragment
 
 class OrdersFragment : ListFragment() {
 
-    private lateinit var orderService: OrderService
+    private var orderService: OrderService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +23,7 @@ class OrdersFragment : ListFragment() {
     ): View? {
         val adapter = context?.let {
             ArrayAdapter(
-                it, android.R.layout.simple_list_item_1, orderService.readAllOrders()
+                it, android.R.layout.simple_list_item_1, orderService?.readAllOrders().orEmpty()
             )
         }
 

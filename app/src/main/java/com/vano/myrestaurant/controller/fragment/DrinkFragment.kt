@@ -6,17 +6,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vano.myrestaurant.R
-import com.vano.myrestaurant.model.entity.Drink
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.vano.myrestaurant.controller.activity.DrinkDetailActivity
-import java.util.stream.Collectors
+import com.vano.myrestaurant.model.entity.Card
 
 class DrinkFragment : Fragment(), RecyclerAdapter.Listener {
 
-    private lateinit var drinkService: DrinkService
+    private var drinkService: DrinkService? = null
+
+    private companion object {
+        const val SPAN_AMOUNT = 2
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +31,22 @@ class DrinkFragment : Fragment(), RecyclerAdapter.Listener {
         savedInstanceState: Bundle?
     ): View {
         val recycler = inflater.inflate(R.layout.fragment_drink, container, false) as RecyclerView
-        val drinks = drinkService.readAllDrink()
-        val names = drinks.stream().map(Drink::name).collect(Collectors.toList())
-        val resourceIds = drinks.stream().map(Drink::resourceID).collect(Collectors.toList())
+        val drinks = drinkService?.readAllDrink()
+        val cards = drinks?.map { Card(it.resourceID, it.name) }
 
-        recycler.layoutManager = StaggeredGridLayoutManager(2, RecyclerView.VERTICAL)
-        recycler.adapter = RecyclerAdapter(resourceIds, names, this)
+        return if (cards != null)
+            configureRecycler(recycler, cards)
+        else recycler
+    }
+
+    private fun configureRecycler(recycler: RecyclerView, cards: List<Card>): RecyclerView {
+
+        recycler.layoutManager = StaggeredGridLayoutManager(SPAN_AMOUNT, RecyclerView.VERTICAL)
+
+        val recyclerAdapter = RecyclerAdapter(cards)
+
+        recyclerAdapter.listener = this
+        recycler.adapter = recyclerAdapter
 
         return recycler
     }

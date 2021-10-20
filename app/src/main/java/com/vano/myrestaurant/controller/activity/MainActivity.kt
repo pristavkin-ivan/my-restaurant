@@ -26,22 +26,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var drawerLayout: DrawerLayout? = null
 
+    private companion object {
+        const val POSITION_1 = 1
+        const val POSITION_2 = 2
+        const val FRAGMENT_AMOUNT = 3
+    }
+
     private val tabConfigurationStrategy: TabLayoutMediator.TabConfigurationStrategy =
         TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when (position) {
-                1 -> tab.text = getString(R.string.food_tab)
-                2 -> tab.text = getString(R.string.drink_tab)
+                POSITION_1 -> tab.text = getString(R.string.food_tab)
+                POSITION_2 -> tab.text = getString(R.string.drink_tab)
                 else -> tab.text = getString(R.string.home_tab)
             }
         }
 
     private class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
-        override fun getItemCount(): Int = 3
+        override fun getItemCount(): Int = FRAGMENT_AMOUNT
 
         override fun createFragment(position: Int): Fragment = when (position) {
-            1 -> FoodFragment()
-            2 -> DrinkFragment()
+            POSITION_1 -> FoodFragment()
+            POSITION_2 -> DrinkFragment()
             else -> HomeFragment()
         }
 

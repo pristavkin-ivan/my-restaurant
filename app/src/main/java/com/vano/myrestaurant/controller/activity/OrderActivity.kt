@@ -16,7 +16,7 @@ import com.vano.myrestaurant.model.util.ActivityUtil
 
 class OrderActivity : AppCompatActivity() {
 
-    private lateinit var orderService: OrderService
+    private var orderService: OrderService? = null
 
     private var orderId = 0
 
@@ -39,9 +39,9 @@ class OrderActivity : AppCompatActivity() {
         floatingButton.setOnClickListener {
             val foodSpinner = findViewById<Spinner>(R.id.drink_spinner)
             val drinkSpinner = findViewById<Spinner>(R.id.food_spinner)
-            orderId = orderService.createOrder(
+            orderId = orderService?.createOrder(
                 foodSpinner.selectedItem.toString(), drinkSpinner.selectedItem.toString()
-            )
+            ) ?: 0
             configureSnackBar()
         }
     }
@@ -52,7 +52,7 @@ class OrderActivity : AppCompatActivity() {
             R.string.order_created,
             Snackbar.LENGTH_LONG
         )
-        snackbar.setAction(R.string.undo) { orderService.deleteOrder(orderId) }
+        snackbar.setAction(R.string.undo) { orderService?.deleteOrder(orderId) }
 
         snackbar.show()
     }

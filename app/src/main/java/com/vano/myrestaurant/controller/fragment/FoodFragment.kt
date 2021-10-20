@@ -1,6 +1,5 @@
 package com.vano.myrestaurant.controller.fragment
 
-import android.app.ActivityOptions
 import com.vano.myrestaurant.model.service.FoodService
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,15 +12,17 @@ import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.vano.myrestaurant.controller.activity.FoodDetailActivity
+import com.vano.myrestaurant.model.entity.Card
 import java.util.stream.Collectors
 
 class FoodFragment(private var listener: Listener? = null) : Fragment(), RecyclerAdapter.Listener {
 
-    companion object {
-        private const val ID = "id"
+    private companion object {
+        const val ID = "id"
+        const val SPAN_AMOUNT = 2
     }
 
-    private lateinit var foodService: FoodService
+    private var foodService: FoodService? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,17 +38,31 @@ class FoodFragment(private var listener: Listener? = null) : Fragment(), Recycle
             inflater.inflate(R.layout.fragment_food, container, false) as RecyclerView
 
         if (listener == null) {
-            val food = foodService.readAllFood()
-            val names = food.stream().map(Food::name).collect(Collectors.toList())
-            val resourceIds = food.stream().map(Food::resourceId).collect(Collectors.toList())
+            val food = foodService?.readAllFood()
 
-            recyclerView.layoutManager = GridLayoutManager(recyclerView.context, 2)
-            recyclerView.adapter = RecyclerAdapter(resourceIds, names, this)
+            val cards = food?.map { Card(it.resourceId, it.name)}
+
+            cards?.let { configureRecycler(recyclerView, cards) }
         } else {
-            listener!!.configureView(recyclerView)
+            listener?.configureRecyclerView(recyclerView)
         }
         return recyclerView
     }
+
+    private fun configureRecycler(
+        recycler: RecyclerView, cards: List<Card>
+    ): RecyclerView {
+
+        recycler.layoutManager = GridLayoutManager(recycler.context, SPAN_AMOUNT)
+
+        val recyclerAdapter = RecyclerAdapter(cards)
+
+        recyclerAdapter.listener = this
+        recycler.adapter = recyclerAdapter
+
+        return recycler
+    }
+
 
     override fun onItemClick(position: Int, bundle: Bundle?) {
         val intent = Intent(context, FoodDetailActivity::class.java)
@@ -57,6 +72,6 @@ class FoodFragment(private var listener: Listener? = null) : Fragment(), Recycle
     }
 
     interface Listener {
-        fun configureView(recyclerView: RecyclerView?)
+        fun configureRecyclerView(recyclerView: RecyclerView?)
     }
 }
