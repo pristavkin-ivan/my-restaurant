@@ -27,5 +27,8 @@
     <string name="order_created">Order was created</string>
     <string name="undo">Undo</string>
     <string name="my_orders">My orders</string>
+    <string name="home_fragment">Home Fragment!</string>
+    <string name="animate">animate</string>
+    <string name="transition_name">my_transition</string>
 
 </resources>
