@@ -13,7 +13,7 @@ public class RestaurantDatabaseHelper extends SQLiteOpenHelper {
 
     private final static String DB_NAME = "restaurant.db";
 
-    private final static int DB_VERSION = 3;
+    private final static int DB_VERSION = 4;
 
     private final static String CREATE_FOOD_TABLE = "create table food(" +
             "_id integer primary key autoincrement" +
@@ -45,15 +45,22 @@ public class RestaurantDatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(CREATE_FOOD_TABLE);
         sqLiteDatabase.execSQL(CREATE_DRINK_TABLE);
+        sqLiteDatabase.execSQL("alter table food add column favorite int default 0");
+        sqLiteDatabase.execSQL(CREATE_ORDERS_TABLE);
+        inflateDrink(sqLiteDatabase);
+        inflateFood(sqLiteDatabase);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(CREATE_ORDERS_TABLE);
+        inflateDrink(sqLiteDatabase);
+        inflateFood(sqLiteDatabase);
     }
 
     @Override
     public void onDowngrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        sqLiteDatabase.execSQL("alter table food add column favorite int default 0");
     }
 
     private void insertFood(SQLiteDatabase db, String name, String description, Integer weight
@@ -94,6 +101,16 @@ public class RestaurantDatabaseHelper extends SQLiteOpenHelper {
                 , "Whole fried young potatoes with herbs", 300, R.drawable.potato);
         insertFood(sqLiteDatabase, "Hamburger"
                 , "Delicious burger with beef and cheese", 250, R.drawable.hamburger);
+
+    }
+
+    private void inflateDrink(SQLiteDatabase sqLiteDatabase) {
+        insertDrink(sqLiteDatabase, "Black tea"
+                , "Hot indian black tea", 300, R.drawable.black_tea);
+        insertDrink(sqLiteDatabase, "Green tea"
+                , "Hot indian green tea", 300, R.drawable.green_tea);
+        insertDrink(sqLiteDatabase, "Coca cola"
+                , "The most popular soda drink all over the world", 500, R.drawable.cola);
 
     }
 
