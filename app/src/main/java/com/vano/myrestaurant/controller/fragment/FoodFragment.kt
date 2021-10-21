@@ -26,7 +26,7 @@ class FoodFragment(private var listener: Listener? = null) : Fragment(), Recycle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        foodService = FoodService(context)
+        foodService = context?.let { FoodService(it) }
     }
 
     override fun onCreateView(

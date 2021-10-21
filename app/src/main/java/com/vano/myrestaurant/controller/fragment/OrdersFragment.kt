@@ -14,7 +14,7 @@ class OrdersFragment : ListFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        orderService = OrderService(context)
+        orderService = context?.let { OrderService(it) }
     }
 
     override fun onCreateView(

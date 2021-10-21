@@ -11,6 +11,8 @@ import com.vano.myrestaurant.R
 import com.vano.myrestaurant.model.RestaurantDatabaseHelper
 import com.vano.myrestaurant.model.dao.DrinkDao
 import com.vano.myrestaurant.model.dao.FoodDao
+import com.vano.myrestaurant.model.service.DrinkService
+import com.vano.myrestaurant.model.service.FoodService
 import com.vano.myrestaurant.model.service.OrderService
 import com.vano.myrestaurant.model.util.ActivityUtil
 
@@ -40,7 +42,7 @@ class OrderActivity : AppCompatActivity() {
             val foodSpinner = findViewById<Spinner>(R.id.drink_spinner)
             val drinkSpinner = findViewById<Spinner>(R.id.food_spinner)
             orderId = orderService?.createOrder(
-                foodSpinner.selectedItem.toString(), drinkSpinner.selectedItem.toString()
+                foodSpinner.selectedItemPosition, drinkSpinner.selectedItemPosition
             ) ?: 0
             configureSnackBar()
         }
@@ -58,7 +60,7 @@ class OrderActivity : AppCompatActivity() {
     }
 
     private fun populateDrinksSpinner() {
-        val drinks = DrinkDao(RestaurantDatabaseHelper(this)).findAll()
+        val drinks = DrinkService(this).readAllDrink()
         val adapter = ArrayAdapter(
             this, android.R.layout.simple_list_item_1, drinks
         )
@@ -68,7 +70,7 @@ class OrderActivity : AppCompatActivity() {
     }
 
     private fun populateFoodSpinner() {
-        val food = FoodDao(RestaurantDatabaseHelper(this)).findAll()
+        val food = FoodService(this).readAllFood()
         val adapter = ArrayAdapter(
             this, android.R.layout.simple_list_item_1, food
         )

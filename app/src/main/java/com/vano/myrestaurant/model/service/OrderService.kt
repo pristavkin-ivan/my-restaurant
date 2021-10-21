@@ -1,42 +1,52 @@
 package com.vano.myrestaurant.model.service
 
 import android.content.Context
-import com.vano.myrestaurant.model.dao.Dao
-import com.vano.myrestaurant.model.entity.Food
-import com.vano.myrestaurant.model.entity.Drink
 import com.vano.myrestaurant.model.entity.Order
-import android.database.sqlite.SQLiteOpenHelper
-import com.vano.myrestaurant.model.RestaurantDatabaseHelper
 import com.vano.myrestaurant.model.dao.FoodDao
 import com.vano.myrestaurant.model.dao.DrinkDao
 import com.vano.myrestaurant.model.dao.OrderDao
+import com.vano.myrestaurant.model.db.MyRestaurantDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.*
 
-class OrderService(context: Context?) {
+class OrderService(context: Context) {
 
-    private val foodDao: Dao<Food>
+    private val foodDao: FoodDao
 
-    private val drinkDao: Dao<Drink>
+    private val drinkDao: DrinkDao
 
-    private val orderDao: Dao<Order>
+    private val orderDao: OrderDao
 
     init {
-        val dbHelper: SQLiteOpenHelper = RestaurantDatabaseHelper(context)
-        foodDao = FoodDao(dbHelper)
-        drinkDao = DrinkDao(dbHelper)
-        orderDao = OrderDao(dbHelper)
+        val myRestaurantDatabase: MyRestaurantDatabase = MyRestaurantDatabase
+            .getRestaurantDatabase(context)
+        foodDao = myRestaurantDatabase.foodDao()
+        drinkDao = myRestaurantDatabase.drinkDao()
+        orderDao = myRestaurantDatabase.orderDao()
     }
 
-    fun createOrder(foodName: String?, drinkName: String?): Int {
-        val food = foodDao.findByName(foodName)
-        val drink = drinkDao.findByName(drinkName)
-        return orderDao.create(Order(0, food, drink))
+    fun createOrder(foodId: Int, drinkId: Int): Int {
+        GlobalScope.launch (Dispatchers.IO) {
+            orderDao.add(Order(0, foodId + 1, drinkId + 1))
+        }
+        return 1
     }
 
     fun readAllOrders(): List<Order> {
-        return orderDao.findAll()
+        var list: List<Order>? = null
+        GlobalScope.launch (Dispatchers.IO) {
+            list = orderDao.findAll()
+        }
+
+        Thread.sleep(100)
+        return list ?: Collections.emptyList()
     }
 
     fun deleteOrder(orderId: Int) {
-        orderDao.delete(orderId)
+        GlobalScope.launch (Dispatchers.IO) {
+            //orderDao.delete(orderId)
+        }
     }
 }

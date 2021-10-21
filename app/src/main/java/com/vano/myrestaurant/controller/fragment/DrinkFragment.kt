@@ -23,7 +23,7 @@ class DrinkFragment : Fragment(), RecyclerAdapter.Listener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        drinkService = DrinkService(context)
+        drinkService = context?.let { DrinkService(it) }
     }
 
     override fun onCreateView(

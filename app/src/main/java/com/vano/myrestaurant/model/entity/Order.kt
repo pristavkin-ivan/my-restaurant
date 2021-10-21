@@ -1,4 +1,7 @@
 package com.vano.myrestaurant.model.entity
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class Order(var id: Int, var food: Food, var drink: Drink)
+@Entity
+data class Order(@PrimaryKey(autoGenerate = true) var id: Int, var foodId: Int, var drinkId: Int)
