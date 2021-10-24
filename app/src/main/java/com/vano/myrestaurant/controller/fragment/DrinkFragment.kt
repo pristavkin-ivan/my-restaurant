@@ -57,4 +57,5 @@ class DrinkFragment : Fragment(), RecyclerAdapter.Listener {
         intent.putExtra(DrinkDetailActivity.ID, position)
         startActivity(intent, bundle)
     }
+
 }

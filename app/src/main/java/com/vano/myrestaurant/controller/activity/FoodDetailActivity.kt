@@ -17,6 +17,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.vano.myrestaurant.R
+import com.vano.myrestaurant.databinding.ActivityFoodDetail1Binding
 import com.vano.myrestaurant.model.entity.Food
 import com.vano.myrestaurant.model.service.FoodService
 import com.vano.myrestaurant.model.util.ActivityUtil.configureActionBar
@@ -37,6 +38,8 @@ class FoodDetailActivity : AppCompatActivity() {
 
     private var foodService: FoodService? = null
 
+    private var binding: ActivityFoodDetail1Binding? = null
+
     private val foodId: Int
         get() {
             val intent = intent
@@ -45,7 +48,8 @@ class FoodDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_food_detail1)
+        binding = ActivityFoodDetail1Binding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         foodService = FoodService(this)
 
@@ -75,20 +79,22 @@ class FoodDetailActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setFoodInfo(food: Food) {
-        val photo = findViewById<ImageView>(R.id.photo)
-        val name = findViewById<TextView>(R.id.name)
-        val description = findViewById<TextView>(R.id.description)
-        val weight = findViewById<TextView>(R.id.weight)
-        val favorite = findViewById<CheckBox>(R.id.favorite)
+        binding?. let {
+            val photo = findViewById<ImageView>(R.id.photo)
+            val name = findViewById<TextView>(R.id.name)
+            val description = findViewById<TextView>(R.id.description)
+            val weight = findViewById<TextView>(R.id.weight)
+            val favorite = findViewById<CheckBox>(R.id.favorite)
 
-        photo.setImageResource(food.resourceId)
-        photo.contentDescription = food.name
-        name.text = food.name
-        description.text = food.description
-        weight.text = food.weight.toString() + getString(R.string.weight_measure_unit)
-        favorite.isChecked = food.favorite
+            photo.setImageResource(food.resourceId)
+            photo.contentDescription = food.name
+            name.text = food.name
+            description.text = food.description
+            weight.text = food.weight.toString() + getString(R.string.weight_measure_unit)
+            favorite.isChecked = food.favorite
 
-        favorite.setOnClickListener(this::onFavoriteClicked)
+            favorite.setOnClickListener(this::onFavoriteClicked)
+        }
     }
 
     private fun onFavoriteClicked(checkBox: View) {
@@ -116,15 +122,15 @@ class FoodDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setAnimation(resourceId: Int) = with(findViewById<ImageView>(R.id.image)) {
-        setImageResource(resourceId)
+    private fun setAnimation(resourceId: Int) = binding?.image?.let {
+        it.setImageResource(resourceId)
 
         val animatorSet = AnimatorSet()
 
         animatorSet.duration = DURATION_600
         animatorSet.interpolator = LinearInterpolator()
 
-        animatorSet.playTogether(yAnimator, alfaAnimator)
+        animatorSet.playTogether(it.yAnimator, it.alfaAnimator)
         animatorSet.start()
     }
 

@@ -5,14 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.*
-import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.vano.myrestaurant.R
+import com.vano.myrestaurant.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     private var textAnimation: Animation? = null
+
+    private var binding: FragmentHomeBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,19 +25,24 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onStart() {
         super.onStart()
-        activity?.findViewById<TextView>(R.id.text1)?.startAnimation(textAnimation)
+        val text1 = binding?.text1
 
-        with(activity?.findViewById<Button>(R.id.animate)) {
+        text1?.startAnimation(textAnimation)
 
-            this?.setOnClickListener {
-                activity?.findViewById<TextView>(R.id.text1)?.startAnimation(textAnimation)
-            }
+        binding?.animate?.setOnClickListener {
+            text1?.startAnimation(textAnimation)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 
 }

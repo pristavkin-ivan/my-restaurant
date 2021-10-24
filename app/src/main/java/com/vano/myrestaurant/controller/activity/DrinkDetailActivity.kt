@@ -10,8 +10,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
+import com.vano.myrestaurant.databinding.ActivityDrinkDetail1Binding
 
 class DrinkDetailActivity : AppCompatActivity() {
 
@@ -28,16 +27,19 @@ class DrinkDetailActivity : AppCompatActivity() {
 
     private var drinkService: DrinkService? = null
 
+    private var binding: ActivityDrinkDetail1Binding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_drink_detail1)
+        binding = ActivityDrinkDetail1Binding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         drinkService = DrinkService(this)
 
         ActivityUtil.configureActionBar(this, getString(R.string.drink_title))
         val drink = drinkService?.read(extraId)
 
-        drink?.let {  setActivityInfo(it) }
+        drink?.let { setActivityInfo(it) }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -60,17 +62,18 @@ class DrinkDetailActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setActivityInfo(drink: Drink) {
-        val photo = findViewById<ImageView>(R.id.photo)
-        val name = findViewById<TextView>(R.id.name)
-        val description = findViewById<TextView>(R.id.description)
-        val volume = findViewById<TextView>(R.id.volume)
+    private fun setActivityInfo(drink: Drink) =
+        binding?.let {
+            val photo = it.photo
+            val name = it.name
+            val description = it.description
+            val volume = it.volume
 
-        photo.setImageResource(drink.resourceID)
-        photo.contentDescription = drink.name
-        name.text = drink.name
-        description.text = drink.description
-        volume.text = drink.volume.toString() + getString(R.string.volume_measure_unit)
-    }
+            photo.setImageResource(drink.resourceID)
+            photo.contentDescription = drink.name
+            name.text = drink.name
+            description.text = drink.description
+            volume.text = drink.volume.toString() + getString(R.string.volume_measure_unit)
+        }
 
 }

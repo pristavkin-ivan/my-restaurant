@@ -1,4 +1,5 @@
 @file:JvmName("MainActivity")
+
 package com.vano.myrestaurant.controller.activity
 
 import android.content.Intent
@@ -21,10 +22,13 @@ import com.vano.myrestaurant.R
 import com.vano.myrestaurant.controller.fragment.DrinkFragment
 import com.vano.myrestaurant.controller.fragment.FoodFragment
 import com.vano.myrestaurant.controller.fragment.HomeFragment
+import com.vano.myrestaurant.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var drawerLayout: DrawerLayout? = null
+
+    private var binding: ActivityMainBinding? = null
 
     private companion object {
         const val POSITION_1 = 1
@@ -57,12 +61,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        toolbar = findViewById(R.id.toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding?.root
+        setContentView(view)
+
+        toolbar = binding?.toolbar?.root
         setSupportActionBar(toolbar)
 
-        drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = binding?.drawerLayout
         configureViewPagerAndTabs()
         configureNavigationView()
         configureDrawerToggle()
@@ -116,17 +123,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun configureNavigationView() {
-        val navigationView = findViewById<NavigationView>(R.id.nav)
-        navigationView.setNavigationItemSelectedListener(this)
+        val navigationView = binding?.nav
+        navigationView?.setNavigationItemSelectedListener(this)
     }
 
     private fun configureViewPagerAndTabs() {
-        val viewPager2: ViewPager2 = findViewById(R.id.view_pager)
+        val viewPager2 = binding?.viewPager
 
-        viewPager2.adapter = PagerAdapter(this)
+        viewPager2?.adapter = PagerAdapter(this)
 
-        val tabLayout: TabLayout = findViewById(R.id.tab)
+        val tabLayout = binding?.tab
 
-        TabLayoutMediator(tabLayout, viewPager2, tabConfigurationStrategy).attach()
+        if (viewPager2 != null && tabLayout != null)
+            TabLayoutMediator(tabLayout, viewPager2, tabConfigurationStrategy).attach()
     }
 }
