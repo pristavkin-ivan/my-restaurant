@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.OrdersActivity">
+    tools:context=".view.activity.OrdersActivity">
 
     <include layout="@layout/toolbar"
         android:id="@+id/toolbar"/>
 
     <fragment
-        android:name="com.vano.myrestaurant.fragment.OrdersFragment"
+        android:name="com.vano.myrestaurant.view.fragment.OrdersFragment"
         android:id="@+id/orders_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

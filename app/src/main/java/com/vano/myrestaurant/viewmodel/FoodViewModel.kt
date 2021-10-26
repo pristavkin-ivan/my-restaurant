@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.vano.myrestaurant.db.MyRestaurantDatabase
-import com.vano.myrestaurant.entity.Drink
-import com.vano.myrestaurant.entity.Food
-import com.vano.myrestaurant.repository.FoodRepository
+import com.vano.myrestaurant.model.db.MyRestaurantDatabase
+import com.vano.myrestaurant.model.entity.Drink
+import com.vano.myrestaurant.model.entity.Food
+import com.vano.myrestaurant.model.repository.FoodRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*

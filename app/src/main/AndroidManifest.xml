@@ -10,27 +10,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyRestaurant">
         <activity
-            android:name=".activity.OrdersActivity"
+            android:name=".view.activity.OrdersActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity"/>
+            android:parentActivityName=".view.activity.MainActivity"/>
         <activity
-            android:name=".activity.FavoriteFoodActivity"
+            android:name=".view.activity.FavoriteFoodActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".view.activity.MainActivity" />
         <activity
-            android:name=".activity.OrderActivity"
+            android:name=".view.activity.OrderActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".view.activity.MainActivity" />
         <activity
-            android:name=".activity.DrinkDetailActivity"
+            android:name=".view.activity.DrinkDetailActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".view.activity.MainActivity" />
         <activity
-            android:name=".activity.FoodDetailActivity"
+            android:name=".view.activity.FoodDetailActivity"
             android:exported="true"
-            android:parentActivityName=".activity.MainActivity" />
+            android:parentActivityName=".view.activity.MainActivity" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".view.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
