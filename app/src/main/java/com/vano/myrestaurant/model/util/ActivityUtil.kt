@@ -6,7 +6,6 @@ import com.vano.myrestaurant.R
 
 object ActivityUtil {
 
-    @JvmStatic
     fun configureActionBar(activity: AppCompatActivity, title: String?) {
         val toolbar = activity.findViewById<Toolbar>(R.id.toolbar)
         activity.setSupportActionBar(toolbar)

@@ -1,7 +1,6 @@
-package com.vano.myrestaurant.controller.activity
+package com.vano.myrestaurant.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
-import com.vano.myrestaurant.model.service.DrinkService
 import android.os.Bundle
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.model.util.ActivityUtil
@@ -10,30 +9,36 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
+import com.vano.myrestaurant.databinding.ActivityDrinkDetail1Binding
+import com.vano.myrestaurant.viewmodel.DrinkViewModel
 
 class DrinkDetailActivity : AppCompatActivity() {
 
     companion object {
         const val ID = "id"
+        const val DEFAULT_ID_VALUE = 0
     }
 
     private val extraId: Int
         get() {
             val intent = intent
-            return intent.getIntExtra(ID, 0)
+            return intent.getIntExtra(ID, DEFAULT_ID_VALUE)
         }
 
-    private val drinkService: DrinkService = DrinkService(this)
+    private var binding: ActivityDrinkDetail1Binding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_drink_detail1)
+        binding = ActivityDrinkDetail1Binding.inflate(layoutInflater)
+        setContentView(binding?.root)
+
+        val drinkViewModel = ViewModelProvider(this)[DrinkViewModel::class.java]
 
         ActivityUtil.configureActionBar(this, getString(R.string.drink_title))
-        val drink = drinkService.read(extraId)
-        setActivityInfo(drink)
+        drinkViewModel.read(extraId).observe(this) {
+            setActivityInfo(it)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -56,16 +61,18 @@ class DrinkDetailActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setActivityInfo(drink: Drink) {
-        val photo = findViewById<ImageView>(R.id.photo)
-        val name = findViewById<TextView>(R.id.name)
-        val description = findViewById<TextView>(R.id.description)
-        val volume = findViewById<TextView>(R.id.volume)
-        photo.setImageResource(drink.resourceID)
-        photo.contentDescription = drink.name
-        name.text = drink.name
-        description.text = drink.description
-        volume.text = drink.volume.toString() + getString(R.string.volume_measure_unit)
-    }
+    private fun setActivityInfo(drink: Drink) =
+        binding?.let {
+            val photo = it.photo
+            val name = it.name
+            val description = it.description
+            val volume = it.volume
+
+            photo.setImageResource(drink.resourceID)
+            photo.contentDescription = drink.name
+            name.text = drink.name
+            description.text = drink.description
+            volume.text = drink.volume.toString() + getString(R.string.volume_measure_unit)
+        }
 
 }

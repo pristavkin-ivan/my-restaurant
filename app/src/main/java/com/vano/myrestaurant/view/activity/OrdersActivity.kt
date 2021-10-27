@@ -1,5 +1,4 @@
-@file:JvmName("OrdersActivity")
-package com.vano.myrestaurant.controller.activity
+package com.vano.myrestaurant.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

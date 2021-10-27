@@ -1,5 +1,4 @@
-@file:JvmName("MainActivity")
-package com.vano.myrestaurant.controller.activity
+package com.vano.myrestaurant.view.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,30 +17,39 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.vano.myrestaurant.R
-import com.vano.myrestaurant.controller.fragment.DrinkFragment
-import com.vano.myrestaurant.controller.fragment.FoodFragment
-import com.vano.myrestaurant.controller.fragment.HomeFragment
+import com.vano.myrestaurant.view.fragment.DrinkFragment
+import com.vano.myrestaurant.view.fragment.FoodFragment
+import com.vano.myrestaurant.view.fragment.HomeFragment
+import com.vano.myrestaurant.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var drawerLayout: DrawerLayout? = null
 
+    private var binding: ActivityMainBinding? = null
+
+    private companion object {
+        const val POSITION_1 = 1
+        const val POSITION_2 = 2
+        const val FRAGMENT_AMOUNT = 3
+    }
+
     private val tabConfigurationStrategy: TabLayoutMediator.TabConfigurationStrategy =
         TabLayoutMediator.TabConfigurationStrategy { tab, position ->
             when (position) {
-                1 -> tab.text = getString(R.string.food_tab)
-                2 -> tab.text = getString(R.string.drink_tab)
+                POSITION_1 -> tab.text = getString(R.string.food_tab)
+                POSITION_2 -> tab.text = getString(R.string.drink_tab)
                 else -> tab.text = getString(R.string.home_tab)
             }
         }
 
     private class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
-        override fun getItemCount(): Int = 3
+        override fun getItemCount(): Int = FRAGMENT_AMOUNT
 
         override fun createFragment(position: Int): Fragment = when (position) {
-            1 -> FoodFragment()
-            2 -> DrinkFragment()
+            POSITION_1 -> FoodFragment()
+            POSITION_2 -> DrinkFragment()
             else -> HomeFragment()
         }
 
@@ -51,12 +59,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        toolbar = findViewById(R.id.toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding?.root
+        setContentView(view)
+
+        toolbar = binding?.toolbar?.root
         setSupportActionBar(toolbar)
 
-        drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = binding?.drawerLayout
         configureViewPagerAndTabs()
         configureNavigationView()
         configureDrawerToggle()
@@ -110,17 +121,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun configureNavigationView() {
-        val navigationView = findViewById<NavigationView>(R.id.nav)
-        navigationView.setNavigationItemSelectedListener(this)
+        val navigationView = binding?.nav
+        navigationView?.setNavigationItemSelectedListener(this)
     }
 
     private fun configureViewPagerAndTabs() {
-        val viewPager2: ViewPager2 = findViewById(R.id.view_pager)
+        val viewPager2 = binding?.viewPager
 
-        viewPager2.adapter = PagerAdapter(this)
+        viewPager2?.adapter = PagerAdapter(this)
 
-        val tabLayout: TabLayout = findViewById(R.id.tab)
+        val tabLayout = binding?.tab
 
-        TabLayoutMediator(tabLayout, viewPager2, tabConfigurationStrategy).attach()
+        if (viewPager2 != null && tabLayout != null)
+            TabLayoutMediator(tabLayout, viewPager2, tabConfigurationStrategy).attach()
     }
 }
