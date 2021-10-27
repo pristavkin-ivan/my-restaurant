@@ -16,30 +16,32 @@ class FoodViewModel(application: Application): AndroidViewModel(application) {
 
     private val repository: FoodRepository
 
-    val readAll: LiveData<List<Food>>
-
-    val readAllFavorite: LiveData<List<Food>>
-
     init {
         val myRestaurantDatabase: MyRestaurantDatabase = MyRestaurantDatabase
             .getRestaurantDatabase(application)
         repository = FoodRepository(myRestaurantDatabase.foodDao())
-        readAll = repository.readAll
-        readAllFavorite = repository.readAllFavorite
     }
 
-    fun read(id: Int) = repository.read(id + 1)
+    fun readAll() = repository.readAll
+
+    fun readAllFavorite() = repository.readAllFavorite
+
+    fun read(id: Int) = repository.read(id)
 
     fun addToFavorite(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.addToFavorite(id + 1)
+            repository.addToFavorite(id)
         }
     }
 
     fun deleteFromFavorite(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteFromFavorite(id + 1)
+            repository.deleteFromFavorite(id)
         }
+    }
+
+    fun insertFood() {
+        repository.insertFood()
     }
 
 }

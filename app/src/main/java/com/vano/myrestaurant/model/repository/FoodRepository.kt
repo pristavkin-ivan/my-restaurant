@@ -1,6 +1,11 @@
 package com.vano.myrestaurant.model.repository
 
+import com.vano.myrestaurant.R
 import com.vano.myrestaurant.model.dao.FoodDao
+import com.vano.myrestaurant.model.entity.Food
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class FoodRepository(private val foodDao: FoodDao) {
 
@@ -14,14 +19,14 @@ class FoodRepository(private val foodDao: FoodDao) {
 
     suspend fun deleteFromFavorite(id: Int) = foodDao.updateFavoriteColumn(id, false)
 
-    /*fun insertFood() {
+    fun insertFood() {
         GlobalScope.launch(Dispatchers.IO) {
             foodDao.add(
                 Food(
                     0,
                     "Roast potato",
                     "Delicious roast potato with ham and herbs",
-                    4500,
+                    450,
                     R.drawable.potato
                 )
             )
@@ -58,5 +63,5 @@ class FoodRepository(private val foodDao: FoodDao) {
                 )
             )
         }
-    }*/
+    }
 }

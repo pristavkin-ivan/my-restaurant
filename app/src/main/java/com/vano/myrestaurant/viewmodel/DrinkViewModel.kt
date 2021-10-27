@@ -15,15 +15,15 @@ class DrinkViewModel(application: Application): AndroidViewModel(application) {
 
     private val repository: DrinkRepository
 
-    val readAll: LiveData<List<Drink>>
-
     init {
         val myRestaurantDatabase: MyRestaurantDatabase = MyRestaurantDatabase
             .getRestaurantDatabase(application)
         repository = DrinkRepository(myRestaurantDatabase.drinkDao())
-        readAll = repository.readAll
     }
 
-    fun read(id: Int) = repository.read(id + 1)
+    fun insertDrink() = repository.insertDrinks()
 
+    fun readAll() = repository.readAll
+
+    fun read(id: Int) = repository.read(id)
 }

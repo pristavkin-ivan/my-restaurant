@@ -1,23 +1,21 @@
 package com.vano.myrestaurant.model.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityOptions
-import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.RecyclerView
 import com.vano.myrestaurant.model.adapter.RecyclerAdapter.CardViewHolder
 import android.view.ViewGroup
-import android.view.LayoutInflater
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import com.vano.myrestaurant.R
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import com.vano.myrestaurant.model.entity.Card
+import com.vano.myrestaurant.model.view.RestaurantCardView
 import java.util.*
 
-class RecyclerAdapter : RecyclerView.Adapter<CardViewHolder>() {
+class RecyclerAdapter(var listener: Listener? = null) : RecyclerView.Adapter<CardViewHolder>() {
 
     var cards: List<Card> = Collections.emptyList()
         @SuppressLint("NotifyDataSetChanged")
@@ -26,73 +24,51 @@ class RecyclerAdapter : RecyclerView.Adapter<CardViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var listener: Listener? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val cardView = layoutInflater.inflate(
-            R.layout.card, parent, false
-        ) as CardView
-
-        return CardViewHolder(getCardLayout(parent.context))
+        return CardViewHolder(RestaurantCardView.getInstance(parent.context))
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        holder.fillView(position, cards, listener)
-    }
-
-    private fun getCardLayout(context: Context): CardView {
-        val cardLayout = CardView(context)
-
-        cardLayout.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 200)
-        cardLayout.elevation = 4f
-        cardLayout.radius = 6f
-
-
-        val linearLayout = LinearLayout(context)
-
-
-        linearLayout.orientation = LinearLayout.VERTICAL
-
-        val imageView = ImageView(context)
-        imageView.id = R.id.photo
-        val textView = TextView(context)
-        textView.id = R.id.name
-
-        linearLayout.addView(imageView)
-        linearLayout.addView(textView)
-
-        cardLayout.addView(linearLayout)
-        return cardLayout
+        holder.card = cards[position]
+        holder.fillView(listener)
     }
 
     override fun getItemCount() = cards.size
 
+    private companion object {
+        const val ZERO = 0
+    }
+
     class CardViewHolder(private var cardView: CardView) : RecyclerView.ViewHolder(cardView) {
 
-        fun fillView(position: Int, cards: List<Card>, listener: Listener?) {
+        var card: Card? = null
+
+        fun fillView(listener: Listener?) {
             val name = cardView.findViewById<TextView>(R.id.name)
             val image = cardView.findViewById<ImageView>(R.id.photo)
 
-            name.text = cards[position].caption
-            image.setImageResource(cards[position].resourceId)
-            image.contentDescription = cards[position].caption
+            card?.let {
+                name.text = it.caption
+                image.setImageResource(it.resourceId)
+                image.contentDescription = it.caption
+            }
 
             if (listener != null) {
                 cardView.setOnClickListener {
                     val options = ActivityOptions.makeSceneTransitionAnimation(
-                        (listener as Fragment).activity,
+                        listener.activityContext,
                         cardView,
-                        (listener as Fragment).getString(R.string.transition_name)
+                        listener.activityContext?.getString(R.string.transition_name)
                     )
-                    listener.onItemClick(position, options.toBundle())
+                    listener.onItemClick(card?.itemId ?: ZERO, options.toBundle())
                 }
             }
         }
     }
 
     interface Listener {
-        fun onItemClick(position: Int, bundle: Bundle?)
+        fun onItemClick(id: Int, bundle: Bundle?)
+        val activityContext: Activity?
     }
 
 }

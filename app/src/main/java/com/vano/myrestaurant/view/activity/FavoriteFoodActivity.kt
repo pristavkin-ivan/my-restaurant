@@ -1,5 +1,8 @@
 package com.vano.myrestaurant.view.activity
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import com.vano.myrestaurant.model.util.ActivityUtil
 import androidx.appcompat.app.AppCompatActivity
 import com.vano.myrestaurant.view.fragment.FoodFragment
@@ -12,7 +15,7 @@ import com.vano.myrestaurant.model.adapter.RecyclerAdapter
 import com.vano.myrestaurant.model.entity.Card
 import com.vano.myrestaurant.viewmodel.FoodViewModel
 
-class FavoriteFoodActivity : AppCompatActivity(), FoodFragment.Listener {
+class FavoriteFoodActivity : AppCompatActivity(), FoodFragment.Listener, RecyclerAdapter.Listener {
 
     private var foodViewModel: FoodViewModel? = null
 
@@ -35,12 +38,22 @@ class FavoriteFoodActivity : AppCompatActivity(), FoodFragment.Listener {
     }
 
     override fun configureRecyclerView(recyclerView: RecyclerView?) {
-        val recyclerAdapter = RecyclerAdapter()
+        val recyclerAdapter = RecyclerAdapter(this)
 
         recyclerView?.layoutManager = GridLayoutManager(recyclerView?.context, 2)
-        foodViewModel?.readAllFavorite?.observe(this) {
-            recyclerAdapter.cards = it.map { food -> Card(food.resourceId, food.name) }
+        foodViewModel?.readAllFavorite()?.observe(this) {
+            recyclerAdapter.cards = it.map { food -> Card(food.resourceId, food.name, food.id) }
         }
         recyclerView?.adapter = recyclerAdapter
     }
+
+    override fun onItemClick(id: Int, bundle: Bundle?) {
+        val intent = Intent(this, FoodDetailActivity::class.java)
+
+        intent.putExtra(FoodFragment.ID, id)
+        startActivity(intent, bundle)
+    }
+
+    override val activityContext: Activity
+        get() = this
 }

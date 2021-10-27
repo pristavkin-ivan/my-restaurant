@@ -23,7 +23,7 @@ class OrdersFragment : ListFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        orderViewModel?.readAll?.observe(viewLifecycleOwner) {
+        orderViewModel?.readAll()?.observe(viewLifecycleOwner) {
             listAdapter = ArrayAdapter(
                 requireContext(), android.R.layout.simple_list_item_1, it
             )

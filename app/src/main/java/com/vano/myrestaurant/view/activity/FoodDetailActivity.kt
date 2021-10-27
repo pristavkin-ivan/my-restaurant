@@ -7,6 +7,7 @@ import android.app.*
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -118,6 +119,9 @@ class FoodDetailActivity : AppCompatActivity() {
             setAnimation(food?.resourceId ?: R.drawable.ic_done_white_24dp)
             notificationManger
                 .notify(NOTIFICATION_ID_10, buildNotification(getString(R.string.add_to_favorites)))
+            foodViewModel?.readAllFavorite()?.observe(this) {
+                it.forEach {it1 -> Log.i("fav", "" + it1 ) }
+            }
         } else {
             foodViewModel?.deleteFromFavorite(foodId)
             notificationManger

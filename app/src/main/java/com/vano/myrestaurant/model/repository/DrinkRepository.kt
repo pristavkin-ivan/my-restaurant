@@ -1,6 +1,11 @@
 package com.vano.myrestaurant.model.repository
 
+import com.vano.myrestaurant.R
 import com.vano.myrestaurant.model.dao.DrinkDao
+import com.vano.myrestaurant.model.entity.Drink
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class DrinkRepository(private val drinkDao: DrinkDao) {
 
@@ -8,7 +13,7 @@ class DrinkRepository(private val drinkDao: DrinkDao) {
 
     fun read(id: Int) = drinkDao.find(id)
 
-    /*fun insertDrinks() {
+    fun insertDrinks() {
         GlobalScope.launch(Dispatchers.IO) {
             drinkDao.add(
                 Drink(
@@ -30,6 +35,6 @@ class DrinkRepository(private val drinkDao: DrinkDao) {
                 )
             )
         }
-    }*/
+    }
 
 }

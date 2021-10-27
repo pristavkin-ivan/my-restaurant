@@ -1,5 +1,6 @@
 package com.vano.myrestaurant.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -17,7 +18,7 @@ import com.vano.myrestaurant.viewmodel.FoodViewModel
 
 class FoodFragment(private var listener: Listener? = null) : Fragment(), RecyclerAdapter.Listener {
 
-    private companion object {
+    internal companion object {
         const val ID = "id"
         const val SPAN_AMOUNT = 2
     }
@@ -49,8 +50,8 @@ class FoodFragment(private var listener: Listener? = null) : Fragment(), Recycle
         val recyclerAdapter = RecyclerAdapter()
 
         recyclerAdapter.listener = this
-        foodViewModel?.readAll?.observe(viewLifecycleOwner) {
-            recyclerAdapter.cards = it.map { food -> Card(food.resourceId, food.name) }
+        foodViewModel?.readAll()?.observe(viewLifecycleOwner) {
+            recyclerAdapter.cards = it.map { food -> Card(food.resourceId, food.name, food.id) }
         }
         recycler.adapter = recyclerAdapter
 
@@ -58,12 +59,15 @@ class FoodFragment(private var listener: Listener? = null) : Fragment(), Recycle
     }
 
 
-    override fun onItemClick(position: Int, bundle: Bundle?) {
-        val intent = Intent(context, FoodDetailActivity::class.java)
+    override fun onItemClick(id: Int, bundle: Bundle?) {
+        val intent = Intent(activityContext, FoodDetailActivity::class.java)
 
-        intent.putExtra(ID, position)
+        intent.putExtra(ID, id)
         startActivity(intent, bundle)
     }
+
+    override val activityContext: Activity?
+        get() = activity
 
     interface Listener {
         fun configureRecyclerView(recyclerView: RecyclerView?)

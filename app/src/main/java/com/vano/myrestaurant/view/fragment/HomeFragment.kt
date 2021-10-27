@@ -1,13 +1,17 @@
 package com.vano.myrestaurant.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.FragmentHomeBinding
+import com.vano.myrestaurant.viewmodel.DrinkViewModel
+import com.vano.myrestaurant.viewmodel.FoodViewModel
 
 class HomeFragment : Fragment() {
 

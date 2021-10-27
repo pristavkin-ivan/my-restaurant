@@ -1,5 +1,6 @@
 package com.vano.myrestaurant.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -38,8 +39,8 @@ class DrinkFragment : Fragment(), RecyclerAdapter.Listener {
 
         val recyclerAdapter = RecyclerAdapter()
 
-        drinkViewModel.readAll.observe(viewLifecycleOwner) {
-            recyclerAdapter.cards = it.map { drink -> Card(drink.resourceID, drink.name) }
+        drinkViewModel.readAll().observe(viewLifecycleOwner) {
+            recyclerAdapter.cards = it.map { drink -> Card(drink.resourceID, drink.name, drink.id) }
         }
         recyclerAdapter.listener = this
         recycler.adapter = recyclerAdapter
@@ -47,11 +48,14 @@ class DrinkFragment : Fragment(), RecyclerAdapter.Listener {
         return recycler
     }
 
-    override fun onItemClick(position: Int, bundle: Bundle?) {
-        val intent = Intent(context, DrinkDetailActivity::class.java)
+    override fun onItemClick(id: Int, bundle: Bundle?) {
+        val intent = Intent(activityContext, DrinkDetailActivity::class.java)
 
-        intent.putExtra(DrinkDetailActivity.ID, position)
+        intent.putExtra(DrinkDetailActivity.ID, id)
         startActivity(intent, bundle)
     }
+
+    override val activityContext: Activity?
+        get() = activity
 
 }

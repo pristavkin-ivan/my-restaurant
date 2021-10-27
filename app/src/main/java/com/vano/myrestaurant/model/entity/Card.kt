@@ -1,3 +1,3 @@
 package com.vano.myrestaurant.model.entity
 
-class Card(val resourceId: Int, val caption: String)
+class Card(val resourceId: Int, val caption: String, val itemId: Int)

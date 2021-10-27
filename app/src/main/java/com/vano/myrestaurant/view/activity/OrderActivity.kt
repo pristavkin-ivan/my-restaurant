@@ -69,7 +69,7 @@ class OrderActivity : AppCompatActivity() {
         val drinkViewModel = ViewModelProvider(this)[DrinkViewModel::class.java]
         val spinner = binding?.drinkSpinner
 
-        drinkViewModel.readAll.observe(this) {
+        drinkViewModel.readAll().observe(this) {
             spinner?.adapter = ArrayAdapter(
                 this, android.R.layout.simple_list_item_1, it
             )
@@ -80,7 +80,7 @@ class OrderActivity : AppCompatActivity() {
         val foodViewModel = ViewModelProvider(this)[FoodViewModel::class.java]
         val spinner = binding?.foodSpinner
 
-        foodViewModel.readAll.observe(this) {
+        foodViewModel.readAll().observe(this) {
             spinner?.adapter = ArrayAdapter(
                 this, android.R.layout.simple_list_item_1, it
             )
