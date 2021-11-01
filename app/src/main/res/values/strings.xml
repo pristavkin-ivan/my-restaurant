@@ -30,5 +30,11 @@
     <string name="home_fragment">Home Fragment!</string>
     <string name="animate">animate</string>
     <string name="transition_name">my_transition</string>
+    <string name="find_out_weather">FIND OUT WEATHER</string>
+    <string name="city_hint">Type city name...</string>
+    <string name="save_city">save city</string>
+    <string name="saved_cities">Saved cities</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
