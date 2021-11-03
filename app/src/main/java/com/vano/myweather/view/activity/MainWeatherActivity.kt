@@ -3,7 +3,6 @@ package com.vano.myweather.view.activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -28,8 +27,13 @@ class MainWeatherActivity : AppCompatActivity() {
         binding?.root
         setContentView(binding?.root)
 
+        val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
+
         setSupportActionBar(binding?.toolbar?.root)
-        configureSearchButton()
+        configureSearchButton(cityViewModel)
+        binding?.saveButton?.setOnClickListener {
+            cityViewModel.saveCity(readCity())
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -45,8 +49,7 @@ class MainWeatherActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun configureSearchButton() {
-        val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
+    private fun configureSearchButton(cityViewModel: CityViewModel) {
         binding?.searchButton?.setOnClickListener {
             cityViewModel.getCity(binding?.city?.text.toString()).observe(this) { response ->
                 if (response.isSuccessful) {
@@ -66,4 +69,14 @@ class MainWeatherActivity : AppCompatActivity() {
         binding?.t3?.text = city.humidity.toString()
         binding?.t4?.text = city.feelsLikeTemperature.toString()
     }
+
+    private fun readCity() =
+        City(
+            0,
+            binding?.city?.text.toString(),
+            binding?.t1?.text.toString().toDouble(),
+            binding?.t2?.text.toString(),
+            binding?.t3?.text.toString().toDouble(),
+            binding?.t4?.text.toString().toDouble()
+        )
 }

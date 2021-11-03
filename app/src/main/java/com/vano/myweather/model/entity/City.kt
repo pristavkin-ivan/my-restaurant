@@ -2,7 +2,6 @@ package com.vano.myweather.model.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
 
 @Entity
 data class City(
@@ -13,4 +12,8 @@ data class City(
     val description: String,
     val humidity: Double,
     val feelsLikeTemperature: Double,
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}
