@@ -37,7 +37,7 @@ class CityDeserializer : JsonDeserializer<City?> {
         val feelsLike = jsonObject.getAsJsonObject(MAIN)
             .getAsJsonPrimitive(FEELS_LIKE).asDouble
 
-        return City(0, name, temp, description, humidity, feelsLike)
+        return City(name, temp, description, humidity, feelsLike)
     }
 
 }

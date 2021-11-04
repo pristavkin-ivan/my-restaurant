@@ -12,5 +12,12 @@ class CityRepository(private val dao: CityDao) {
 
     fun getAllSavedCities() = dao.getAll()
 
-    fun getSavedCity(id: Int) = dao.get(id)
+    fun getSavedCity(name: String) = dao.get(name)
+
+    suspend fun update(city: City?) = city?.let {
+        dao.update(city)
+        dao.get(city.name)
+    }
+
+
 }

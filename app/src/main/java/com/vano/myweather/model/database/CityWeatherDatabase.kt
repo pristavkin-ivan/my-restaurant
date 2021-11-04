@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.vano.myweather.model.dao.CityDao
 import com.vano.myweather.model.entity.City
 
-@Database(entities = [City::class], version = 1)
+@Database(entities = [City::class], version = 2)
 abstract class CityWeatherDatabase : RoomDatabase() {
 
     abstract fun cityDao(): CityDao

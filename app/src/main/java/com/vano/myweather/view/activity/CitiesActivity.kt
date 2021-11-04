@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.ActivityCitiesBinding
 import com.vano.myweather.view.fragment.CitiesFragment
-import com.vano.myweather.view.fragment.CityFragment
 
 
 class CitiesActivity : AppCompatActivity(), CitiesFragment.Listener {

@@ -1,10 +1,7 @@
 package com.vano.myweather.model.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.vano.myweather.model.entity.City
 
 @Dao
@@ -16,6 +13,9 @@ interface CityDao {
     @Query("select * from City order by name asc")
     fun getAll(): LiveData<List<City>>
 
-    @Query("select * from City where id = :id")
-    fun get(id: Int): LiveData<City>
+    @Query("select * from City where name = :name")
+    fun get(name: String): LiveData<City>
+
+    @Update
+    suspend fun update(city: City)
 }

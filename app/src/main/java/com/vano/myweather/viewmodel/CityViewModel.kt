@@ -17,6 +17,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
         CityWeatherDatabase.getCityWeatherDatabase(application.applicationContext)
     private val repository: CityRepository?
     private val response: MutableLiveData<Response<City>> = MutableLiveData()
+    private val savedCity: MutableLiveData<City> = MutableLiveData()
 
     init {
         val cityDao = database?.cityDao()
@@ -25,7 +26,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAllSavedCities() = repository?.getAllSavedCities()
 
-    fun getSavedCity(id: Int) = repository?.getSavedCity(id)
+    fun getSavedCity(name: String) = repository?.getSavedCity(name)
 
     fun getCity(city: String): LiveData<Response<City>> {
         viewModelScope.launch(Dispatchers.IO) {
@@ -38,5 +39,12 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository?.save(city)
         }
+    }
+
+    fun updateCityInDb(city: City?): LiveData<City> {
+        viewModelScope.launch(Dispatchers.IO) {
+            savedCity.postValue(repository?.update(city)?.value)
+        }
+        return savedCity
     }
 }

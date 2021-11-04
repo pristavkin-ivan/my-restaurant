@@ -72,7 +72,6 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun readCity() =
         City(
-            0,
             binding?.city?.text.toString(),
             binding?.t1?.text.toString().toDouble(),
             binding?.t2?.text.toString(),
