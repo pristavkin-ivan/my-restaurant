@@ -10,6 +10,8 @@ class CityRepository(private val dao: CityDao) {
 
     suspend fun getCity(city: String) = RetrofitInstance.api.getWeather(city)
 
+    fun getCityRx(city: String) = RetrofitInstance.api.getWeatherRx(city)
+
     fun getAllSavedCities() = dao.getAll()
 
     fun getSavedCity(name: String) = dao.get(name)

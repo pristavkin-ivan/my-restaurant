@@ -51,7 +51,8 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun configureSearchButton(cityViewModel: CityViewModel) {
         binding?.searchButton?.setOnClickListener {
-            cityViewModel.getCity(binding?.city?.text.toString()).observe(this) { response ->
+            cityViewModel.getCityRx(binding?.city?.text.toString())
+            /*cityViewModel.getCity(binding?.city?.text.toString()).observe(this) { response ->
                 if (response.isSuccessful) {
                     response.body()?.let { city ->
                         fillInfo(city)
@@ -59,7 +60,7 @@ class MainWeatherActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this, BAD_REQUEST, Toast.LENGTH_LONG).show()
                 }
-            }
+            }*/
         }
     }
 

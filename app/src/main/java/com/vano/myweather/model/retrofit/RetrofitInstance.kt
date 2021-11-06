@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.vano.myweather.model.api.WeatherApi
 import com.vano.myweather.model.entity.City
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
@@ -18,6 +19,7 @@ object RetrofitInstance {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
     }
 
