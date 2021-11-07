@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.vano.myrestaurant.databinding.FragmentCityBinding
 import com.vano.myweather.model.entity.City
@@ -14,6 +15,10 @@ class CityFragment(var city: City? = null) : Fragment() {
 
     private var binding: FragmentCityBinding? = null
 
+    companion object {
+        const val BAD_REQUEST = "Bad request"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -21,7 +26,7 @@ class CityFragment(var city: City? = null) : Fragment() {
         binding = FragmentCityBinding.inflate(layoutInflater)
 
         city?.let {
-            fillCity(city)
+            fillCity(it)
         }
         configureUpdateButton()
         return binding?.root
@@ -37,24 +42,20 @@ class CityFragment(var city: City? = null) : Fragment() {
 
         binding?.updateButton?.setOnClickListener { _ ->
             city?.let {
-                cityViewModel.getCity(it.name).observe(viewLifecycleOwner) { response ->
-                    if (response.isSuccessful) {
-                        cityViewModel.updateCityInDb(response.body())
-                            .observe(viewLifecycleOwner) { city1 ->
-                                if (city1 != null) fillCity(city1)
-                            }
-                    }
+                cityViewModel.getCityRx(it.name).observe(viewLifecycleOwner) { response ->
+                    if (response.isSuccessful) fillCity(it) else Toast.makeText(requireContext()
+                        , BAD_REQUEST, Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    private fun fillCity(city: City?) {
-        binding?.cityName?.text = city?.name.toString()
-        binding?.temp?.text = city?.temperature.toString()
-        binding?.descr?.text = city?.description.toString()
-        binding?.hum?.text = city?.humidity.toString()
-        binding?.feels?.text = city?.feelsLikeTemperature.toString()
+    private fun fillCity(city: City) {
+        binding?.cityName?.text = city.name
+        binding?.temp?.text = city.temperature.toString()
+        binding?.descr?.text = city.description
+        binding?.hum?.text = city.humidity.toString()
+        binding?.feels?.text = city.feelsLikeTemperature.toString()
     }
 
 }

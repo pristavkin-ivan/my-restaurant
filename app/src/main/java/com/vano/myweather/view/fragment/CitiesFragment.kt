@@ -32,7 +32,7 @@ class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.L
         val recyclerAdapter = CityAdapter(requireContext())
 
         recyclerAdapter.listener = this
-        cityViewModel.getAllSavedCities()?.observe(viewLifecycleOwner) {
+        cityViewModel.getAllSavedCitiesRx().observe(viewLifecycleOwner) {
             recyclerAdapter.cities = it
         }
         recycler.layoutManager = LinearLayoutManager(requireContext())

@@ -33,7 +33,7 @@ class CityDeserializer : JsonDeserializer<City?> {
             .getAsJsonArray(WEATHER_KEY).get(0).asJsonObject.getAsJsonPrimitive(DESCRIPTION).asString
         val temp = jsonObject.getAsJsonObject(MAIN).getAsJsonPrimitive(TEMPERATURE).asDouble
         val humidity = jsonObject.getAsJsonObject(MAIN).getAsJsonPrimitive(HUMIDITY)
-            .asDouble
+            .asInt
         val feelsLike = jsonObject.getAsJsonObject(MAIN)
             .getAsJsonPrimitive(FEELS_LIKE).asDouble
 

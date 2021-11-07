@@ -9,7 +9,7 @@ data class City(
     val name: String,
     val temperature: Double,
     val description: String,
-    val humidity: Double,
+    val humidity: Int,
     val feelsLikeTemperature: Double,
 ) {
     override fun toString(): String {

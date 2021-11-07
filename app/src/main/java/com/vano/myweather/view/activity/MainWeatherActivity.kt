@@ -20,6 +20,8 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private var binding: ActivityMainWeatherBinding? = null
 
+    private var city: City? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,7 +34,7 @@ class MainWeatherActivity : AppCompatActivity() {
         setSupportActionBar(binding?.toolbar?.root)
         configureSearchButton(cityViewModel)
         binding?.saveButton?.setOnClickListener {
-            cityViewModel.saveCity(readCity())
+            city?.let { city -> cityViewModel.saveCityRx(city) }
         }
     }
 
@@ -51,16 +53,17 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun configureSearchButton(cityViewModel: CityViewModel) {
         binding?.searchButton?.setOnClickListener {
-            cityViewModel.getCityRx(binding?.city?.text.toString())
-            /*cityViewModel.getCity(binding?.city?.text.toString()).observe(this) { response ->
-                if (response.isSuccessful) {
-                    response.body()?.let { city ->
-                        fillInfo(city)
+            cityViewModel.getCityRx(binding?.city?.text.toString()).observe(this) {
+                if (it.isSuccessful) {
+                    it.body()?.let { cityRx1 ->
+                        city = cityViewModel.convertCityApiToCity(cityRx1)
+                        fillInfo(cityViewModel.convertCityApiToCity(cityRx1))
                     }
                 } else {
-                    Toast.makeText(this, BAD_REQUEST, Toast.LENGTH_LONG).show()
+                    Toast.makeText(this
+                        , BAD_REQUEST, Toast.LENGTH_LONG).show()
                 }
-            }*/
+            }
         }
     }
 
@@ -71,12 +74,4 @@ class MainWeatherActivity : AppCompatActivity() {
         binding?.t4?.text = city.feelsLikeTemperature.toString()
     }
 
-    private fun readCity() =
-        City(
-            binding?.city?.text.toString(),
-            binding?.t1?.text.toString().toDouble(),
-            binding?.t2?.text.toString(),
-            binding?.t3?.text.toString().toDouble(),
-            binding?.t4?.text.toString().toDouble()
-        )
 }
