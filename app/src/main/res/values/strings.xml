@@ -41,5 +41,6 @@
     <string name="description">Description:</string>
     <string name="humidity">Humidity:</string>
     <string name="feels">Feels:</string>
+    <string name="are_you_sure">Are you sure?</string>
 
 </resources>

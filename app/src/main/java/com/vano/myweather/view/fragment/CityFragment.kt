@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.FragmentCityBinding
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.viewmodel.CityViewModel
@@ -36,16 +39,29 @@ class CityFragment(var city: City? = null) : Fragment() {
         val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
 
         binding?.updateButton?.setOnClickListener { _ ->
-            city?.let {
-                cityViewModel.getCityRx(it.name).observe(viewLifecycleOwner) { c ->
-                    fillCity(c)
-                    cityViewModel.updateCityInDb(c)
-                    fillRecent(city)
-                    city = c
-                }
-            }
+            getBottomSheet(cityViewModel).show()
         }
     }
+
+    private fun getBottomSheet(cityViewModel: CityViewModel) =
+        BottomSheetDialog(requireContext()).apply {
+
+            setContentView(R.layout.bottom_sheet_dialog)
+            findViewById<Button>(R.id.yes)?.setOnClickListener { _ ->
+                city?.let {
+                    cityViewModel.getCityRx(it.name).observe(viewLifecycleOwner) { c ->
+                        fillCity(c)
+                        cityViewModel.updateCityInDb(c)
+                        fillRecent(city)
+                        city = c
+                    }
+                }
+                cancel()
+            }
+            findViewById<Button>(R.id.no)?.setOnClickListener {
+                cancel()
+            }
+        }
 
     private fun fillCity(city: City?) {
         binding?.cityName?.text = city?.name
