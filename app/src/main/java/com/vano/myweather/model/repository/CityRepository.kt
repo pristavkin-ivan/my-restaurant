@@ -29,5 +29,4 @@ class CityRepository(
         dao.get(city.name)
     }
 
-
 }

@@ -1,9 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/feels_old"
+        android:layout_width="122dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="36dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toEndOf="@+id/feels"
+        app:layout_constraintTop_toBottomOf="@+id/hum_old" />
+
+    <TextView
+        android:id="@+id/hum_old"
+        android:layout_width="121dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/hum"
+        app:layout_constraintTop_toBottomOf="@+id/descr_old" />
+
+    <TextView
+        android:id="@+id/descr_old"
+        android:layout_width="121dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="28dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toEndOf="@+id/descr"
+        app:layout_constraintTop_toBottomOf="@+id/temp_old" />
+
+    <TextView
+        android:id="@+id/temp_old"
+        android:layout_width="119dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="28dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/temp"
+        app:layout_constraintTop_toBottomOf="@+id/city_name" />
 
     <TextView
         android:id="@+id/textView4"
@@ -56,34 +97,35 @@
 
     <TextView
         android:id="@+id/feels"
-        android:layout_width="281dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="122dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintStart_toStartOf="@+id/hum"
         app:layout_constraintTop_toBottomOf="@+id/hum" />
 
     <TextView
         android:id="@+id/hum"
-        android:layout_width="282dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="121dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="@+id/descr"
         app:layout_constraintTop_toBottomOf="@+id/descr" />
 
     <TextView
         android:id="@+id/descr"
-        android:layout_width="280dp"
-        android:layout_height="23dp"
+        android:layout_width="121dp"
+        android:layout_height="20dp"
         android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/temp"
         app:layout_constraintTop_toBottomOf="@+id/temp" />
 
     <TextView
         android:id="@+id/temp"
-        android:layout_width="280dp"
-        android:layout_height="23dp"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="108dp"
         android:layout_marginTop="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toBottomOf="@+id/city_name" />
 
     <Button

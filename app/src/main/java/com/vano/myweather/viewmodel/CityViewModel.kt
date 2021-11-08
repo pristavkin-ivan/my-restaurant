@@ -22,7 +22,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
         CityWeatherDatabase.getCityWeatherDatabase(application.applicationContext)
     private val repository: CityRepository?
     private val response: MutableLiveData<Response<City>> = MutableLiveData()
-    private val responseRx: MutableLiveData<Response<CityApi>> = MutableLiveData()
+    private val responseRx: MutableLiveData<City> = MutableLiveData()
     private val savedCity: MutableLiveData<City> = MutableLiveData()
     private val compositeDisposable = CompositeDisposable()
     private val savedCities: MutableLiveData<List<City>> = MutableLiveData()
@@ -66,16 +66,27 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
         return response
     }
 
-    fun getCityRx(city: String): LiveData<Response<CityApi>> {
-        val disposable = repository?.getCityRx(city)?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())?.subscribe({
-                responseRx.value = it
-            }, {
-                Toast.makeText(
-                    getApplication(), ERROR + it.localizedMessage, Toast.LENGTH_LONG
-                ).show()
-            })
+    fun getCityRx(city: String): LiveData<City> {
+        val observable = repository?.getCityRx(city)
+            ?.subscribeOn(Schedulers.io())
+            ?.filter {
+                it.isSuccessful
+            }
+            ?.map {
+                it.body()?.let { it1 -> convertCityApiToCity(it1) }
+            }
+            ?.observeOn(AndroidSchedulers.mainThread())
+
+        val disposable = observable?.subscribe({
+            responseRx.value = it
+        }, {
+            Toast.makeText(
+                getApplication(), ERROR + it.localizedMessage, Toast.LENGTH_LONG
+            ).show()
+        })
+
         disposable?.let { compositeDisposable.add(it) }
+
         return responseRx
     }
 
@@ -99,11 +110,11 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        compositeDisposable.dispose()
+        compositeDisposable.clear()
         super.onCleared()
     }
 
-    fun convertCityApiToCity(cityApi: CityApi) =
+    private fun convertCityApiToCity(cityApi: CityApi) =
         City(
             cityApi.name,
             cityApi.main.temp,

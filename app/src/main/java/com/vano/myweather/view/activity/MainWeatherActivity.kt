@@ -54,15 +54,8 @@ class MainWeatherActivity : AppCompatActivity() {
     private fun configureSearchButton(cityViewModel: CityViewModel) {
         binding?.searchButton?.setOnClickListener {
             cityViewModel.getCityRx(binding?.city?.text.toString()).observe(this) {
-                if (it.isSuccessful) {
-                    it.body()?.let { cityRx1 ->
-                        city = cityViewModel.convertCityApiToCity(cityRx1)
-                        fillInfo(cityViewModel.convertCityApiToCity(cityRx1))
-                    }
-                } else {
-                    Toast.makeText(this
-                        , BAD_REQUEST, Toast.LENGTH_LONG).show()
-                }
+                city = it
+                fillInfo(it)
             }
         }
     }
