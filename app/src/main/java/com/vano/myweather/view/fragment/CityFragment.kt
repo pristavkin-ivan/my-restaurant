@@ -1,16 +1,20 @@
 package com.vano.myweather.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.FragmentCityBinding
 import com.vano.myweather.model.entity.City
+import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
 
 class CityFragment(var city: City? = null) : Fragment() {
@@ -30,11 +34,6 @@ class CityFragment(var city: City? = null) : Fragment() {
         return binding?.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     private fun configureUpdateButton() {
         val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
 
@@ -47,14 +46,14 @@ class CityFragment(var city: City? = null) : Fragment() {
         BottomSheetDialog(requireContext()).apply {
 
             setContentView(R.layout.bottom_sheet_dialog)
+
+            val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
+
             findViewById<Button>(R.id.yes)?.setOnClickListener { _ ->
+
+                stateMonitoring(cityViewModel, progressBar)
                 city?.let {
-                    cityViewModel.getCityRx(it.name).observe(viewLifecycleOwner) { c ->
-                        fillCity(c)
-                        cityViewModel.updateCityInDb(c)
-                        fillRecent(city)
-                        city = c
-                    }
+                    cityViewModel.getCityRx(it.name)
                 }
                 cancel()
             }
@@ -62,6 +61,41 @@ class CityFragment(var city: City? = null) : Fragment() {
                 cancel()
             }
         }
+
+    private fun stateMonitoring(
+        cityViewModel: CityViewModel,
+        progressBar: ProgressBar?
+    ) {
+        cityViewModel.stateData.observe(viewLifecycleOwner) {
+            Log.d("state", "State: ${it.javaClass.name}")
+            when (it) {
+                is CityState.EmptyCityState -> progressBar?.visibility = View.INVISIBLE
+                is CityState.LoadingCityState -> progressBar?.visibility = View.VISIBLE
+                is CityState.LoadedCityState -> {
+                    progressBar?.visibility = View.INVISIBLE
+                    updateAction(it, cityViewModel)
+                }
+                is CityState.ErrorCityState -> {
+                    progressBar?.visibility = View.INVISIBLE
+                    Toast.makeText(
+                        requireContext(),
+                        it.errorMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun updateAction(
+        it: CityState.LoadedCityState,
+        cityViewModel: CityViewModel
+    ) {
+        fillCity(it.city)
+        fillRecent(city)
+        city = it.city
+        cityViewModel.updateCityInDb(city)
+    }
 
     private fun fillCity(city: City?) {
         binding?.cityName?.text = city?.name

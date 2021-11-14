@@ -3,7 +3,10 @@ package com.vano.myweather.model.repository
 import com.vano.myweather.model.dao.CityDao
 import com.vano.myweather.model.dao.CityRxDao
 import com.vano.myweather.model.entity.City
+import com.vano.myweather.model.entity.CityApi
 import com.vano.myweather.model.retrofit.RetrofitInstance
+import io.reactivex.Single
+import retrofit2.Response
 
 class CityRepository(
     private val dao: CityDao,
@@ -16,7 +19,12 @@ class CityRepository(
 
     suspend fun getCity(city: String) = RetrofitInstance.api.getWeather(city)
 
-    fun getCityRx(city: String) = RetrofitInstance.api.getWeatherRx(city)
+    fun getCityRx(city: String): Single<Response<CityApi>> {
+        Thread.sleep(1000)
+        return RetrofitInstance.api.getWeatherRx(city)
+    }
+
+    fun getCityRx1(city: String) = RetrofitInstance.api.getWeatherRx(city)
 
     fun getAllSavedCities() = dao.getAll()
 

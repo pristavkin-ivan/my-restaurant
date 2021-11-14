@@ -5,6 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        android:id="@+id/city"
+        android:layout_width="311dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="44dp"
+        android:ems="10"
+        android:hint="@string/city_hint"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        tools:ignore="DuplicateSpeakableTextCheck" />
+
     <TextView
         android:id="@+id/textView8"
         android:layout_width="70dp"
@@ -87,16 +100,16 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
-        android:id="@+id/city"
+        android:id="@+id/city2"
         android:layout_width="311dp"
         android:layout_height="49dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="@string/city_hint"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
+        app:layout_constraintTop_toBottomOf="@+id/city" />
 
     <ImageButton
         android:id="@+id/searchButton"
@@ -107,7 +120,7 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.708"
-        app:layout_constraintStart_toEndOf="@+id/city"
+        app:layout_constraintStart_toEndOf="@+id/city2"
         app:layout_constraintTop_toBottomOf="@+id/header"
         app:srcCompat="@drawable/ic_search" />
 
@@ -118,7 +131,7 @@
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/t2"
-        app:layout_constraintTop_toBottomOf="@+id/city" />
+        app:layout_constraintTop_toBottomOf="@+id/city2" />
 
     <Button
         android:id="@+id/saveButton"
@@ -142,7 +155,7 @@
         app:layout_constraintEnd_toStartOf="@+id/t1"
         app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city" />
+        app:layout_constraintTop_toBottomOf="@+id/city2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

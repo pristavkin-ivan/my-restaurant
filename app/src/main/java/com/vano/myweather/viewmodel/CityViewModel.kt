@@ -10,12 +10,18 @@ import com.vano.myweather.model.database.CityWeatherDatabase
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.entity.CityApi
 import com.vano.myweather.model.repository.CityRepository
+import com.vano.myweather.model.state.CityState
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.Subject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
-import io.reactivex.schedulers.Schedulers
 
 class CityViewModel(application: Application) : AndroidViewModel(application) {
     private val database =
@@ -26,6 +32,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
     private val savedCity: MutableLiveData<City> = MutableLiveData()
     private val compositeDisposable = CompositeDisposable()
     private val savedCities: MutableLiveData<List<City>> = MutableLiveData()
+    val stateData = MutableLiveData<CityState>().apply { value = CityState.EmptyCityState }
 
     init {
         val cityDao = database?.cityDao()
@@ -66,29 +73,54 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
         return response
     }
 
-    fun getCityRx(city: String): LiveData<City> {
-        val observable = repository?.getCityRx(city)
-            ?.subscribeOn(Schedulers.io())
-            ?.filter {
-                it.isSuccessful
-            }
-            ?.map {
-                it.body()?.let { it1 -> convertCityApiToCity(it1) }
-            }
-            ?.observeOn(AndroidSchedulers.mainThread())
+    fun getCityRx1(city1: String, city2: String): Subject<City> {
 
-        val disposable = observable?.subscribe({
-            responseRx.value = it
+        val observable1 = getObservableCity(city1)?.toObservable()
+        val observable2 = getObservableCity(city2, Schedulers.computation())?.toObservable()
+
+        val subject = ReplaySubject.create<City>()
+
+        val disposable1 = getDisposable(observable1, subject)
+        val disposable2 = getDisposable(observable2, subject)
+
+        compositeDisposable.addAll(disposable1, disposable2)
+
+        return subject
+    }
+
+    private fun getDisposable(
+        observable: Observable<City>?,
+        subject: ReplaySubject<City>
+    ) =
+        observable?.subscribe({
+            subject.onNext(it)
         }, {
             Toast.makeText(
                 getApplication(), ERROR + it.localizedMessage, Toast.LENGTH_LONG
             ).show()
         })
 
-        disposable?.let { compositeDisposable.add(it) }
+    fun getCityRx(cityName: String) {
+        stateData.value = CityState.LoadingCityState
 
-        return responseRx
+        val disposable = getObservableCity(cityName)
+            ?.subscribe({
+            if (it == null) stateData.value = CityState.EmptyCityState else {
+                stateData.value = CityState.LoadedCityState(it)
+            }
+        }, {
+            stateData.value = CityState.ErrorCityState(it.toString())
+        })
+
+        compositeDisposable.addAll(disposable)
     }
+
+    private fun getObservableCity(city: String, scheduler: Scheduler = Schedulers.io()) = repository?.getCityRx(city)
+        ?.subscribeOn(scheduler)
+        ?.map {
+            it.body()?.let { it1 -> convertCityApiToCity(it1) }
+        }
+        ?.observeOn(AndroidSchedulers.mainThread())
 
     fun saveCity(city: City) {
         viewModelScope.launch(Dispatchers.IO) {
