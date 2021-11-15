@@ -17,7 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,7 +32,12 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
     private val savedCity: MutableLiveData<City> = MutableLiveData()
     private val compositeDisposable = CompositeDisposable()
     private val savedCities: MutableLiveData<List<City>> = MutableLiveData()
-    val stateData = MutableLiveData<CityState>().apply { value = CityState.EmptyCityState }
+    private var disposable: Disposable? = null
+    private var disposable1: Disposable? = null
+    private var disposable2: Disposable? = null
+    private var disposable3: Disposable? = null
+    private var subject: Subject<CityState>? = null
+    val stateData = MutableLiveData<CityState>()
 
     init {
         val cityDao = database?.cityDao()
@@ -49,7 +54,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllSavedCities() = repository?.getAllSavedCities()
 
     fun getAllSavedCitiesRx(): LiveData<List<City>> {
-        val disposable =
+        disposable3 =
             repository?.getAllSavedCitiesRx()?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())?.subscribe({
                     savedCities.value = it
@@ -58,9 +63,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
                         getApplication(), ERROR + it.localizedMessage, Toast.LENGTH_LONG
                     ).show()
                 })
-        disposable?.let {
-            compositeDisposable.add(it)
-        }
+        addDisposableToCompositeDisposable(disposable3)
         return savedCities
     }
 
@@ -73,46 +76,44 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
         return response
     }
 
-    fun getCityRx1(city1: String, city2: String): Subject<City> {
-
+    fun getCityRx1(city1: String, city2: String): Subject<CityState>? {
         val observable1 = getObservableCity(city1)?.toObservable()
-        val observable2 = getObservableCity(city2, Schedulers.computation())?.toObservable()
+        val observable2 = getObservableCity(city2)?.toObservable()
 
-        val subject = ReplaySubject.create<City>()
+        subject = BehaviorSubject.create()
 
-        val disposable1 = getDisposable(observable1, subject)
-        val disposable2 = getDisposable(observable2, subject)
+        disposable1 = getDisposable(observable1, subject)
+        disposable2 = getDisposable(observable2, subject)
 
-        compositeDisposable.addAll(disposable1, disposable2)
+        addDisposableToCompositeDisposable(disposable1, disposable2)
 
         return subject
     }
 
+    private fun addDisposableToCompositeDisposable(vararg disposable: Disposable?)
+    = compositeDisposable.addAll(*disposable)
+
     private fun getDisposable(
         observable: Observable<City>?,
-        subject: ReplaySubject<City>
+        subject: Subject<CityState>?
     ) =
         observable?.subscribe({
-            subject.onNext(it)
+            if (it == null) stateData.value = CityState.EmptyCityState else {
+                subject?.onNext(CityState.LoadedCityState(it))
+            }
         }, {
-            Toast.makeText(
-                getApplication(), ERROR + it.localizedMessage, Toast.LENGTH_LONG
-            ).show()
+            subject?.onNext(CityState.ErrorCityState(it.toString()))
         })
 
     fun getCityRx(cityName: String) {
         stateData.value = CityState.LoadingCityState
-
-        val disposable = getObservableCity(cityName)
+        disposable = getObservableCity(cityName)
             ?.subscribe({
-            if (it == null) stateData.value = CityState.EmptyCityState else {
                 stateData.value = CityState.LoadedCityState(it)
-            }
         }, {
             stateData.value = CityState.ErrorCityState(it.toString())
         })
-
-        compositeDisposable.addAll(disposable)
+        addDisposableToCompositeDisposable(disposable)
     }
 
     private fun getObservableCity(city: String, scheduler: Scheduler = Schedulers.io()) = repository?.getCityRx(city)
@@ -142,6 +143,7 @@ class CityViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
+        subject?.onNext(CityState.EmptyCityState)
         compositeDisposable.clear()
         super.onCleared()
     }

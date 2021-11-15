@@ -15,6 +15,8 @@ import com.vano.myweather.viewmodel.CityViewModel
 
 class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.Listener {
 
+    private var cityViewModel: CityViewModel? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,11 +30,11 @@ class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.L
     }
 
     private fun configureRecycler(recycler: RecyclerView) {
-        val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
+        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
         val recyclerAdapter = CityAdapter(requireContext())
 
         recyclerAdapter.listener = this
-        cityViewModel.getAllSavedCitiesRx().observe(viewLifecycleOwner) {
+        cityViewModel?.getAllSavedCitiesRx()?.observe(viewLifecycleOwner) {
             recyclerAdapter.cities = it
         }
         recycler.layoutManager = LinearLayoutManager(requireContext())

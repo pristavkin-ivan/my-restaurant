@@ -21,11 +21,14 @@ class CityFragment(var city: City? = null) : Fragment() {
 
     private var binding: FragmentCityBinding? = null
 
+    private var cityViewModel: CityViewModel? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCityBinding.inflate(layoutInflater)
+        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
 
         city?.let {
             fillCity(it)
@@ -35,14 +38,12 @@ class CityFragment(var city: City? = null) : Fragment() {
     }
 
     private fun configureUpdateButton() {
-        val cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
-
         binding?.updateButton?.setOnClickListener { _ ->
-            getBottomSheet(cityViewModel).show()
+            getBottomSheet().show()
         }
     }
 
-    private fun getBottomSheet(cityViewModel: CityViewModel) =
+    private fun getBottomSheet() =
         BottomSheetDialog(requireContext()).apply {
 
             setContentView(R.layout.bottom_sheet_dialog)
@@ -50,10 +51,9 @@ class CityFragment(var city: City? = null) : Fragment() {
             val progressBar = findViewById<ProgressBar>(R.id.progress_bar)
 
             findViewById<Button>(R.id.yes)?.setOnClickListener { _ ->
-
-                stateMonitoring(cityViewModel, progressBar)
+                stateMonitoring(progressBar)
                 city?.let {
-                    cityViewModel.getCityRx(it.name)
+                    cityViewModel?.getCityRx(it.name)
                 }
                 cancel()
             }
@@ -63,20 +63,19 @@ class CityFragment(var city: City? = null) : Fragment() {
         }
 
     private fun stateMonitoring(
-        cityViewModel: CityViewModel,
         progressBar: ProgressBar?
     ) {
-        cityViewModel.stateData.observe(viewLifecycleOwner) {
+        cityViewModel?.stateData?.observe(viewLifecycleOwner) {
             Log.d("state", "State: ${it.javaClass.name}")
             when (it) {
-                is CityState.EmptyCityState -> progressBar?.visibility = View.INVISIBLE
+                is CityState.EmptyCityState -> progressBar?.visibility = View.GONE
                 is CityState.LoadingCityState -> progressBar?.visibility = View.VISIBLE
                 is CityState.LoadedCityState -> {
-                    progressBar?.visibility = View.INVISIBLE
-                    updateAction(it, cityViewModel)
+                    progressBar?.visibility = View.GONE
+                    updateAction(it)
                 }
                 is CityState.ErrorCityState -> {
-                    progressBar?.visibility = View.INVISIBLE
+                    progressBar?.visibility = View.GONE
                     Toast.makeText(
                         requireContext(),
                         it.errorMessage,
@@ -89,12 +88,11 @@ class CityFragment(var city: City? = null) : Fragment() {
 
     private fun updateAction(
         it: CityState.LoadedCityState,
-        cityViewModel: CityViewModel
     ) {
         fillCity(it.city)
         fillRecent(city)
         city = it.city
-        cityViewModel.updateCityInDb(city)
+        cityViewModel?.updateCityInDb(city)
     }
 
     private fun fillCity(city: City?) {

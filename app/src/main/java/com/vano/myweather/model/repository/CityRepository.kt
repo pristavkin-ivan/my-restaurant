@@ -20,11 +20,9 @@ class CityRepository(
     suspend fun getCity(city: String) = RetrofitInstance.api.getWeather(city)
 
     fun getCityRx(city: String): Single<Response<CityApi>> {
-        Thread.sleep(1000)
+        Thread.sleep(800)
         return RetrofitInstance.api.getWeatherRx(city)
     }
-
-    fun getCityRx1(city: String) = RetrofitInstance.api.getWeatherRx(city)
 
     fun getAllSavedCities() = dao.getAll()
 
@@ -36,5 +34,4 @@ class CityRepository(
         dao.update(city)
         dao.get(city.name)
     }
-
 }
