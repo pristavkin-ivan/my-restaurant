@@ -1,26 +1,14 @@
 package com.vano.myrestaurant.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import com.vano.myrestaurant.model.db.MyRestaurantDatabase
-import com.vano.myrestaurant.model.entity.Drink
-import com.vano.myrestaurant.model.entity.Food
 import com.vano.myrestaurant.model.repository.FoodRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
-class FoodViewModel(application: Application): AndroidViewModel(application) {
+class FoodViewModel(application: Application): BaseViewModel(application) {
 
-    private val repository: FoodRepository
-
-    init {
-        val myRestaurantDatabase: MyRestaurantDatabase = MyRestaurantDatabase
-            .getRestaurantDatabase(application)
-        repository = FoodRepository(myRestaurantDatabase.foodDao())
-    }
+    private val repository: FoodRepository = FoodRepository(myRestaurantDatabase.foodDao())
 
     fun readAll() = repository.readAll
 
