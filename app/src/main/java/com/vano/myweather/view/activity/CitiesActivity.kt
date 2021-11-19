@@ -6,9 +6,14 @@ import androidx.fragment.app.Fragment
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.ActivityCitiesBinding
 import com.vano.myweather.view.fragment.CitiesFragment
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class CitiesActivity
+    : AppCompatActivity(), CitiesFragment.Listener {
 
-class CitiesActivity : AppCompatActivity(), CitiesFragment.Listener {
+    @Inject lateinit var citiesFragment: CitiesFragment
 
     private var binding: ActivityCitiesBinding? = null
 
@@ -21,7 +26,8 @@ class CitiesActivity : AppCompatActivity(), CitiesFragment.Listener {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val transaction = supportFragmentManager.beginTransaction()
 
-        transaction.add(R.id.fragment_container, CitiesFragment(this))
+        citiesFragment.listener = this
+        transaction.add(R.id.fragment_container, citiesFragment)
         transaction.commit()
     }
 

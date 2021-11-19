@@ -19,7 +19,9 @@ abstract class CityWeatherDatabase : RoomDatabase() {
         @Volatile
         private var instance: CityWeatherDatabase? = null
 
-        fun getCityWeatherDatabase(context: Context): CityWeatherDatabase? {
+        private const val DB_NAME = "city_weather_database"
+
+        fun getCityWeatherDatabase(context: Context): CityWeatherDatabase {
             var tempInstance = instance
 
             if (tempInstance == null) {
@@ -27,13 +29,13 @@ abstract class CityWeatherDatabase : RoomDatabase() {
                     tempInstance = Room.databaseBuilder(
                         context.applicationContext,
                         CityWeatherDatabase::class.java,
-                        "city_weather_database"
+                        DB_NAME
                     ).build()
                     instance = tempInstance
                 }
             }
 
-            return tempInstance
+            return tempInstance!!
         }
     }
 }

@@ -13,8 +13,10 @@ import com.vano.myrestaurant.databinding.ActivityMainWeatherBinding
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 
+@AndroidEntryPoint
 class MainWeatherActivity : AppCompatActivity() {
 
     private var binding: ActivityMainWeatherBinding? = null
@@ -78,8 +80,10 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun handleStates(foundCityState: CityState?) {
         when (foundCityState) {
-            is CityState.EmptyCityState -> {}
-            is CityState.LoadingCityState -> {}
+            is CityState.EmptyCityState -> {
+            }
+            is CityState.LoadingCityState -> {
+            }
             is CityState.LoadedCityState -> {
                 city = foundCityState.city
                 Log.d(

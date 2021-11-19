@@ -9,8 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.vano.myrestaurant.R
 import com.vano.myweather.model.entity.City
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CityAdapter(val context: Context): RecyclerView.Adapter<CityAdapter.ViewHolder>() {
+@Singleton
+class CityAdapter @Inject constructor(@ApplicationContext val context: Context)
+    : RecyclerView.Adapter<CityAdapter.ViewHolder>() {
 
     var cities: List<City>? = null
         @SuppressLint("NotifyDataSetChanged")

@@ -16,8 +16,13 @@ import com.vano.myrestaurant.databinding.FragmentCityBinding
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class CityFragment(var city: City? = null) : Fragment() {
+@AndroidEntryPoint
+class CityFragment @Inject constructor() : Fragment() {
+
+    var city: City? = null
 
     private var binding: FragmentCityBinding? = null
 

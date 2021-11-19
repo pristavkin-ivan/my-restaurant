@@ -1,27 +1,31 @@
 package com.vano.myweather.model.repository
 
+import com.vano.myweather.model.api.WeatherApi
 import com.vano.myweather.model.dao.CityDao
 import com.vano.myweather.model.dao.CityRxDao
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.entity.CityApi
-import com.vano.myweather.model.retrofit.RetrofitInstance
+import dagger.hilt.android.scopes.ViewModelScoped
 import io.reactivex.Single
 import retrofit2.Response
+import javax.inject.Inject
 
-class CityRepository(
+@ViewModelScoped
+class CityRepository @Inject constructor(
     private val dao: CityDao,
-    private val daoRx: CityRxDao
+    private val daoRx: CityRxDao,
+    private var api: WeatherApi
 ) {
 
     suspend fun save(city: City) = dao.save(city)
 
     suspend fun saveRx(city: City) = daoRx.save(city)
 
-    suspend fun getCity(city: String) = RetrofitInstance.api.getWeather(city)
+    suspend fun getCity(city: String) = api.getWeather(city)
 
     fun getCityRx(city: String): Single<Response<CityApi>> {
         Thread.sleep(800)
-        return RetrofitInstance.api.getWeatherRx(city)
+        return api.getWeatherRx(city)
     }
 
     fun getAllSavedCities() = dao.getAll()

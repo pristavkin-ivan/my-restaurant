@@ -12,8 +12,15 @@ import com.vano.myrestaurant.R
 import com.vano.myweather.model.adapter.CityAdapter
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.viewmodel.CityViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.Listener {
+@AndroidEntryPoint
+class CitiesFragment @Inject constructor(private val cityFragment: CityFragment,
+                                         private val recyclerAdapter: CityAdapter)
+    : Fragment(), CityAdapter.Listener {
+
+    var listener: Listener? = null
 
     private var cityViewModel: CityViewModel? = null
 
@@ -31,7 +38,6 @@ class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.L
 
     private fun configureRecycler(recycler: RecyclerView) {
         cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
-        val recyclerAdapter = CityAdapter(requireContext())
 
         recyclerAdapter.listener = this
         cityViewModel?.getAllSavedCitiesRx()?.observe(viewLifecycleOwner) {
@@ -42,7 +48,8 @@ class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.L
     }
 
     override fun onClick(city: City?) {
-        listener?.replaceFragment(CityFragment(city))
+        cityFragment.city = city
+        listener?.replaceFragment(cityFragment)
     }
 
     interface Listener {
