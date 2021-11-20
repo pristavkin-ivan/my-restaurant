@@ -6,8 +6,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.ActivityMainWeatherBinding
 import com.vano.myweather.model.entity.City
@@ -23,7 +23,7 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private var cityViewModel: CityViewModel? = null
+    private val cityViewModel: CityViewModel by viewModels()
 
     private var city: City? = null
 
@@ -34,12 +34,10 @@ class MainWeatherActivity : AppCompatActivity() {
         binding?.root
         setContentView(binding?.root)
 
-        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
-
         setSupportActionBar(binding?.toolbar?.root)
         configureSearchButton()
         binding?.saveButton?.setOnClickListener {
-            city?.let { city -> cityViewModel?.saveCityRx(city) }
+            city?.let { city -> cityViewModel.saveCityRx(city) }
         }
     }
 
@@ -63,7 +61,7 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun configureSearchButton() {
         binding?.searchButton?.setOnClickListener {
-            val disposable = cityViewModel?.getCityRx1(
+            val disposable = cityViewModel.getCityRx1(
                 binding?.city?.text.toString(),
                 binding?.city2?.text.toString()
             )

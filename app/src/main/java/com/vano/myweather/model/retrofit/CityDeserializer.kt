@@ -7,9 +7,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonDeserializer
 import com.vano.myweather.model.entity.City
 import java.lang.reflect.Type
+import javax.inject.Inject
 
 
-class CityDeserializer : JsonDeserializer<City?> {
+class CityDeserializer @Inject constructor() : JsonDeserializer<City?> {
 
     companion object {
         const val WEATHER_KEY = "weather"

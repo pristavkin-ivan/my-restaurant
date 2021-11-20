@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vano.myrestaurant.R
@@ -22,7 +22,7 @@ class CitiesFragment @Inject constructor(private val cityFragment: CityFragment,
 
     var listener: Listener? = null
 
-    private var cityViewModel: CityViewModel? = null
+    private val cityViewModel: CityViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,10 +37,8 @@ class CitiesFragment @Inject constructor(private val cityFragment: CityFragment,
     }
 
     private fun configureRecycler(recycler: RecyclerView) {
-        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
-
         recyclerAdapter.listener = this
-        cityViewModel?.getAllSavedCitiesRx()?.observe(viewLifecycleOwner) {
+        cityViewModel.getAllSavedCitiesRx().observe(viewLifecycleOwner) {
             recyclerAdapter.cities = it
         }
         recycler.layoutManager = LinearLayoutManager(requireContext())
