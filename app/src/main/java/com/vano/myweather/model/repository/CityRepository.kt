@@ -17,9 +17,7 @@ class CityRepository @Inject constructor(
     private var api: WeatherApi
 ) {
 
-    suspend fun save(city: City) = dao.save(city)
-
-    suspend fun saveRx(city: City) = daoRx.save(city)
+    suspend fun save(city: City) = daoRx.save(city)
 
     suspend fun getCity(city: String) = api.getWeather(city)
 

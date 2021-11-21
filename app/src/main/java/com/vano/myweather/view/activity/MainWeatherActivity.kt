@@ -37,7 +37,7 @@ class MainWeatherActivity : AppCompatActivity() {
         setSupportActionBar(binding?.toolbar?.root)
         configureSearchButton()
         binding?.saveButton?.setOnClickListener {
-            city?.let { city -> cityViewModel.saveCityRx(city) }
+            city?.let { city -> cityViewModel.saveCity(city) }
         }
     }
 

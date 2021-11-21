@@ -10,6 +10,10 @@ import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.entity.CityApi
 import com.vano.myweather.model.repository.CityRepository
 import com.vano.myweather.model.state.CityState
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -19,14 +23,19 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class CityViewModel @Inject constructor(val repository: CityRepository, application: Application)
-    : AndroidViewModel(application) {
+class CityViewModel @Inject constructor(
+    private val repository: CityRepository,
+    private val dispatchers: DispatchersWrapper,
+    private val schedulers: SchedulersWrapper,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val response: MutableLiveData<Response<City>> = MutableLiveData()
     private val savedCity: MutableLiveData<City> = MutableLiveData()
@@ -47,8 +56,8 @@ class CityViewModel @Inject constructor(val repository: CityRepository, applicat
 
     fun getAllSavedCitiesRx(): LiveData<List<City>> {
         disposable3 =
-            repository.getAllSavedCitiesRx().subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())?.subscribe({
+            repository.getAllSavedCitiesRx().subscribeOn(schedulers.io())
+                ?.observeOn(schedulers.ui())?.subscribe({
                     savedCities.value = it
                 }, {
                     Toast.makeText(
@@ -62,7 +71,7 @@ class CityViewModel @Inject constructor(val repository: CityRepository, applicat
     fun getSavedCity(name: String) = repository.getSavedCity(name)
 
     fun getCity(city: String): LiveData<Response<City>> {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             response.postValue(repository.getCity(city))
         }
         return response
@@ -82,8 +91,8 @@ class CityViewModel @Inject constructor(val repository: CityRepository, applicat
         return subject
     }
 
-    private fun addDisposableToCompositeDisposable(vararg disposable: Disposable?)
-    = compositeDisposable.addAll(*disposable)
+    private fun addDisposableToCompositeDisposable(vararg disposable: Disposable?) =
+        compositeDisposable.addAll(*disposable)
 
     private fun getDisposable(
         observable: Observable<City>?,
@@ -102,33 +111,28 @@ class CityViewModel @Inject constructor(val repository: CityRepository, applicat
         disposable = getObservableCity(cityName)
             .subscribe({
                 stateData.value = CityState.LoadedCityState(it)
-        }, {
-            stateData.value = CityState.ErrorCityState(it.toString())
-        })
+            }, {
+                stateData.value = CityState.ErrorCityState(it.toString())
+            })
         addDisposableToCompositeDisposable(disposable)
     }
 
-    private fun getObservableCity(city: String, scheduler: Scheduler = Schedulers.io()) = repository.getCityRx(city)
-        .subscribeOn(scheduler)
-        .map {
-            it.body()?.let { it1 -> convertCityApiToCity(it1) }
-        }
-        .observeOn(AndroidSchedulers.mainThread())
+    fun getObservableCity(city: String) =
+        repository.getCityRx(city)
+            .subscribeOn(schedulers.io())
+            .map {
+                it.body()?.let { it1 -> convertCityApiToCity(it1) }
+            }
+            .observeOn(schedulers.ui())
 
     fun saveCity(city: City) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             repository.save(city)
         }
     }
 
-    fun saveCityRx(cityRx: City) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.saveRx(cityRx)
-        }
-    }
-
     fun updateCityInDb(city: City?): LiveData<City> {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.io) {
             savedCity.postValue(repository.update(city)?.value)
         }
         return savedCity
@@ -149,4 +153,37 @@ class CityViewModel @Inject constructor(val repository: CityRepository, applicat
             cityApi.main.feels_like
         )
 
+}
+
+interface DispatchersWrapper {
+    val main: CoroutineDispatcher
+    val io: CoroutineDispatcher
+    val default: CoroutineDispatcher
+}
+
+class CoroutineDispatchersWrapper @Inject constructor() : DispatchersWrapper {
+    override val main = Dispatchers.Main
+    override val io = Dispatchers.IO
+    override val default = Dispatchers.Default
+}
+
+interface SchedulersWrapper {
+    fun io(): Scheduler
+    fun ui(): Scheduler
+}
+
+class SchedulersWrapperImpl @Inject constructor() : SchedulersWrapper {
+    override fun io() = Schedulers.io()
+    override fun ui(): Scheduler = AndroidSchedulers.mainThread()
+}
+
+@Module
+@InstallIn(ViewModelComponent::class)
+abstract class CityViewModelModule {
+
+    @Binds
+    abstract fun getDispatchersWrapper(wrapper: CoroutineDispatchersWrapper): DispatchersWrapper
+
+    @Binds
+    abstract fun getSchedulersWrapper(wrapper: SchedulersWrapperImpl): SchedulersWrapper
 }
