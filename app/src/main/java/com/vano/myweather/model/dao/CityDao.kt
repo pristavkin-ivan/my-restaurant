@@ -8,7 +8,7 @@ import com.vano.myweather.model.entity.City
 interface CityDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun save(city: City)
+    suspend fun save(city: City): Long
 
     @Query("select * from City order by name asc")
     fun getAll(): LiveData<List<City>>

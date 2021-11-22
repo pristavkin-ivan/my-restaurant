@@ -1,7 +1,6 @@
 package com.vano.myweather.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,26 +8,31 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.FragmentCityBinding
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import javax.inject.Inject
 
-class CityFragment(var city: City? = null) : Fragment() {
+@AndroidEntryPoint
+class CityFragment @Inject constructor() : Fragment() {
+
+    var city: City? = null
 
     private var binding: FragmentCityBinding? = null
 
-    private var cityViewModel: CityViewModel? = null
+    private val cityViewModel: CityViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCityBinding.inflate(layoutInflater)
-        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
 
         city?.let {
             fillCity(it)
@@ -53,7 +57,7 @@ class CityFragment(var city: City? = null) : Fragment() {
             findViewById<Button>(R.id.yes)?.setOnClickListener { _ ->
                 stateMonitoring(progressBar)
                 city?.let {
-                    cityViewModel?.getCityRx(it.name)
+                    cityViewModel.getCityRx(it.name)
                 }
                 cancel()
             }
@@ -65,8 +69,8 @@ class CityFragment(var city: City? = null) : Fragment() {
     private fun stateMonitoring(
         progressBar: ProgressBar?
     ) {
-        cityViewModel?.stateData?.observe(viewLifecycleOwner) {
-            Log.d("state", "State: ${it.javaClass.name}")
+        cityViewModel.stateData.observe(viewLifecycleOwner) {
+            Timber.d("State: ${it.javaClass.name}")
             when (it) {
                 is CityState.EmptyCityState -> progressBar?.visibility = View.GONE
                 is CityState.LoadingCityState -> progressBar?.visibility = View.VISIBLE
@@ -92,7 +96,7 @@ class CityFragment(var city: City? = null) : Fragment() {
         fillCity(it.city)
         fillRecent(city)
         city = it.city
-        cityViewModel?.updateCityInDb(city)
+        cityViewModel.updateCityInDb(city)
     }
 
     private fun fillCity(city: City?) {

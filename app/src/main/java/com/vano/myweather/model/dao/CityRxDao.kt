@@ -9,7 +9,7 @@ import io.reactivex.Single
 interface CityRxDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun save(city: City)
+    suspend fun save(city: City): Long
 
     @Query("select * from City order by name asc")
     fun getAll(): Observable<List<City>>

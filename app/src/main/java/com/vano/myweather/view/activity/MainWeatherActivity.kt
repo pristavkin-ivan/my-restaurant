@@ -2,26 +2,28 @@ package com.vano.myweather.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.ActivityMainWeatherBinding
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
+import timber.log.Timber
 
+@AndroidEntryPoint
 class MainWeatherActivity : AppCompatActivity() {
 
     private var binding: ActivityMainWeatherBinding? = null
 
     private val compositeDisposable = CompositeDisposable()
 
-    private var cityViewModel: CityViewModel? = null
+    private val cityViewModel: CityViewModel by viewModels()
 
     private var city: City? = null
 
@@ -32,12 +34,10 @@ class MainWeatherActivity : AppCompatActivity() {
         binding?.root
         setContentView(binding?.root)
 
-        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
-
         setSupportActionBar(binding?.toolbar?.root)
         configureSearchButton()
         binding?.saveButton?.setOnClickListener {
-            city?.let { city -> cityViewModel?.saveCityRx(city) }
+            city?.let { city -> cityViewModel.saveCity(city) }
         }
     }
 
@@ -61,12 +61,12 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun configureSearchButton() {
         binding?.searchButton?.setOnClickListener {
-            val disposable = cityViewModel?.getCityRx1(
+            val disposable = cityViewModel.getCityRx1(
                 binding?.city?.text.toString(),
                 binding?.city2?.text.toString()
             )
                 ?.subscribe { foundCityState ->
-                    Log.d("state", "State: ${it.javaClass.name}")
+                    Timber.d("State: %s", it.javaClass.name)
                     handleStates(foundCityState)
                 }
 
@@ -78,13 +78,14 @@ class MainWeatherActivity : AppCompatActivity() {
 
     private fun handleStates(foundCityState: CityState?) {
         when (foundCityState) {
-            is CityState.EmptyCityState -> {}
-            is CityState.LoadingCityState -> {}
+            is CityState.EmptyCityState -> {
+            }
+            is CityState.LoadingCityState -> {
+            }
             is CityState.LoadedCityState -> {
                 city = foundCityState.city
-                Log.d(
-                    "city", "${city?.name} " +
-                            "- ${city?.temperature}"
+                Timber.i(
+                    "city ${city?.name} - ${city?.temperature}"
                 )
                 fillInfo(city)
             }
@@ -96,7 +97,7 @@ class MainWeatherActivity : AppCompatActivity() {
         }
     }
 
-    private fun fillInfo(city: City?) {
+    fun fillInfo(city: City?) {
         binding?.t1?.text = city?.temperature.toString()
         binding?.t2?.text = city?.description
         binding?.t3?.text = city?.humidity.toString()

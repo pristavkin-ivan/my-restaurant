@@ -5,17 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.vano.myrestaurant.R
 import com.vano.myweather.model.adapter.CityAdapter
 import com.vano.myweather.model.entity.City
 import com.vano.myweather.viewmodel.CityViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.Listener {
+@AndroidEntryPoint
+class CitiesFragment @Inject constructor(private val cityFragment: CityFragment,
+                                         private val recyclerAdapter: CityAdapter)
+    : Fragment(), CityAdapter.Listener {
 
-    private var cityViewModel: CityViewModel? = null
+    var listener: Listener? = null
+
+    private val cityViewModel: CityViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,11 +37,8 @@ class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.L
     }
 
     private fun configureRecycler(recycler: RecyclerView) {
-        cityViewModel = ViewModelProvider(this)[CityViewModel::class.java]
-        val recyclerAdapter = CityAdapter(requireContext())
-
         recyclerAdapter.listener = this
-        cityViewModel?.getAllSavedCitiesRx()?.observe(viewLifecycleOwner) {
+        cityViewModel.getAllSavedCitiesRx().observe(viewLifecycleOwner) {
             recyclerAdapter.cities = it
         }
         recycler.layoutManager = LinearLayoutManager(requireContext())
@@ -42,7 +46,8 @@ class CitiesFragment(var listener: Listener? = null) : Fragment(), CityAdapter.L
     }
 
     override fun onClick(city: City?) {
-        listener?.replaceFragment(CityFragment(city))
+        cityFragment.city = city
+        listener?.replaceFragment(cityFragment)
     }
 
     interface Listener {
