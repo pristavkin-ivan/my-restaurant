@@ -1,7 +1,6 @@
 package com.vano.myweather.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -70,7 +70,7 @@ class CityFragment @Inject constructor() : Fragment() {
         progressBar: ProgressBar?
     ) {
         cityViewModel.stateData.observe(viewLifecycleOwner) {
-            Log.d("state", "State: ${it.javaClass.name}")
+            Timber.d("State: ${it.javaClass.name}")
             when (it) {
                 is CityState.EmptyCityState -> progressBar?.visibility = View.GONE
                 is CityState.LoadingCityState -> progressBar?.visibility = View.VISIBLE

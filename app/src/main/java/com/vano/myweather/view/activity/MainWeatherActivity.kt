@@ -2,7 +2,6 @@ package com.vano.myweather.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -15,6 +14,7 @@ import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainWeatherActivity : AppCompatActivity() {
@@ -66,7 +66,7 @@ class MainWeatherActivity : AppCompatActivity() {
                 binding?.city2?.text.toString()
             )
                 ?.subscribe { foundCityState ->
-                    Log.d("state", "State: ${it.javaClass.name}")
+                    Timber.d("State: %s", it.javaClass.name)
                     handleStates(foundCityState)
                 }
 
@@ -84,9 +84,8 @@ class MainWeatherActivity : AppCompatActivity() {
             }
             is CityState.LoadedCityState -> {
                 city = foundCityState.city
-                Log.d(
-                    "city", "${city?.name} " +
-                            "- ${city?.temperature}"
+                Timber.i(
+                    "city ${city?.name} - ${city?.temperature}"
                 )
                 fillInfo(city)
             }
@@ -98,7 +97,7 @@ class MainWeatherActivity : AppCompatActivity() {
         }
     }
 
-    private fun fillInfo(city: City?) {
+    fun fillInfo(city: City?) {
         binding?.t1?.text = city?.temperature.toString()
         binding?.t2?.text = city?.description
         binding?.t3?.text = city?.humidity.toString()
