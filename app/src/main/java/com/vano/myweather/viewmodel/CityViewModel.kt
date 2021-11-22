@@ -78,6 +78,7 @@ class CityViewModel @Inject constructor(
     }
 
     fun getCityRx1(city1: String, city2: String): Subject<CityState>? {
+        stateData.value = CityState.LoadingCityState
         val observable1 = getObservableCity(city1).toObservable()
         val observable2 = getObservableCity(city2).toObservable()
 

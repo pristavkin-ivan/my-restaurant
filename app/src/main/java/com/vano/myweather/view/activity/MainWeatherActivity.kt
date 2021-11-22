@@ -14,6 +14,7 @@ import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
+import org.jetbrains.anko.toast
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -66,7 +67,6 @@ class MainWeatherActivity : AppCompatActivity() {
                 binding?.city2?.text.toString()
             )
                 ?.subscribe { foundCityState ->
-                    Timber.d("State: %s", it.javaClass.name)
                     handleStates(foundCityState)
                 }
 
@@ -77,6 +77,7 @@ class MainWeatherActivity : AppCompatActivity() {
     }
 
     private fun handleStates(foundCityState: CityState?) {
+        Timber.d("State: %s", foundCityState?.javaClass?.name.toString())
         when (foundCityState) {
             is CityState.EmptyCityState -> {
             }
@@ -84,15 +85,13 @@ class MainWeatherActivity : AppCompatActivity() {
             }
             is CityState.LoadedCityState -> {
                 city = foundCityState.city
-                Timber.i(
+                Timber.d(
                     "city ${city?.name} - ${city?.temperature}"
                 )
                 fillInfo(city)
             }
             is CityState.ErrorCityState -> {
-                Toast.makeText(
-                    this, foundCityState.errorMessage, Toast.LENGTH_LONG
-                ).show()
+                toast(foundCityState.errorMessage)
             }
         }
     }

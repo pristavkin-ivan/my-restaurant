@@ -1,5 +1,7 @@
 package com.vano.myweather.model.entity
 
+import com.squareup.moshi.Json
+
 data class CityApi(
     val coord: Coord? = null,
     val weather: List<Weather>,
@@ -12,6 +14,7 @@ data class CityApi(
     val sys: Sys?,
     val timezone: Int,
     val id: Int,
+    @Json(name = "name")
     val name: String,
     val cod: Int
 )

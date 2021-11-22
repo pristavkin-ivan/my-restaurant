@@ -20,6 +20,7 @@ class CityDeserializer @Inject constructor() : JsonDeserializer<City?> {
         const val NAME = "name"
         const val FEELS_LIKE = "feels_like"
         const val HUMIDITY = "humidity"
+        const val FIRST_ELEMENT = 0
     }
 
     override fun deserialize(
@@ -31,7 +32,7 @@ class CityDeserializer @Inject constructor() : JsonDeserializer<City?> {
 
         val name = jsonObject.getAsJsonPrimitive(NAME).asString
         val description = jsonObject
-            .getAsJsonArray(WEATHER_KEY).get(0).asJsonObject.getAsJsonPrimitive(DESCRIPTION).asString
+            .getAsJsonArray(WEATHER_KEY).get(FIRST_ELEMENT).asJsonObject.getAsJsonPrimitive(DESCRIPTION).asString
         val temp = jsonObject.getAsJsonObject(MAIN).getAsJsonPrimitive(TEMPERATURE).asDouble
         val humidity = jsonObject.getAsJsonObject(MAIN).getAsJsonPrimitive(HUMIDITY)
             .asInt
