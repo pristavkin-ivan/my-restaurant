@@ -5,7 +5,7 @@
     <string name="drink_title">Drink</string>
     <string name="order_title">New Order</string>
     <string name="favorite_title">Favorite food</string>
-    <string name="authorization_title">Authorization</string>
+    <string name="authorization_title" translatable="false">Authorization</string>
 
     <string name="home_tab">Home</string>
     <string name="food_tab">Food</string>
@@ -42,5 +42,6 @@
     <string name="humidity">Humidity:</string>
     <string name="feels">Feels:</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="find">find</string>
 
 </resources>
