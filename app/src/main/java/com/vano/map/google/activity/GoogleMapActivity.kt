@@ -1,32 +1,35 @@
 package com.vano.map.google.activity
 
+import BitmapHelper
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.vano.map.google.adapter.MarkerInfoWindowAdapter
+import com.google.maps.android.clustering.ClusterManager
 import com.vano.map.google.entity.MyPlace
+import com.vano.map.google.renderer.MyClusterRenderer
 import com.vano.myrestaurant.R
 import com.vano.myrestaurant.databinding.ActivityGoogleMapBinding
 import org.jetbrains.anko.toast
 import timber.log.Timber
 
 
-class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
+class GoogleMapActivity : AppCompatActivity() {
 
     companion object {
         const val TITLE = "Google map"
@@ -34,10 +37,15 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
         const val MY_KEY = "AIzaSyCitkDUemXUkut6_66B3SvDtGfciT3GU9g"
         val NULL_ISLAND = LatLng(0.0, 0.0)
         const val EMPTY_STRING = ""
-        const val ZOOM = 8f
+        const val ZOOM = 6f
+        val testPlace = MyPlace(
+            "Test", NULL_ISLAND, "About", "Norvezhskaya street,20"
+        )
     }
 
     private var binding: ActivityGoogleMapBinding? = null
+
+    private var clusterManager: ClusterManager<MyPlace>? = null
 
     private var mapFragment: SupportMapFragment? = null
 
@@ -65,7 +73,6 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         addAutocompleteSearch()
         initMap()
-        //addMarker()
     }
 
     private fun addAutocompleteSearch() {
@@ -84,7 +91,15 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         autocompleteFragment?.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                addMarker(
+                /*addMarker(
+                    MyPlace(
+                        place.name.toString(),
+                        place.latLng ?: NULL_ISLAND,
+                        place.businessStatus?.toString() ?: EMPTY_STRING,
+                        place.address ?: EMPTY_STRING
+                    )
+                )*/
+                clusterManager?.addItem(
                     MyPlace(
                         place.name.toString(),
                         place.latLng ?: NULL_ISLAND,
@@ -92,6 +107,7 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         place.address ?: EMPTY_STRING
                     )
                 )
+                clusterManager?.cluster()
                 place.latLng?.let {
                     moveCamera(it)
                 }
@@ -116,16 +132,22 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun addMarker(
-        myPlace: MyPlace = MyPlace(
-            "Test", NULL_ISLAND, "About", "Norvezhskaya street,20"
-        )
+        myPlace: MyPlace = testPlace
     ) {
 
         mapFragment?.getMapAsync {
+            val color = ContextCompat.getColor(this, R.color.primary)
+
             val marker = it.addMarker(
                 MarkerOptions()
                     .title(myPlace.name)
                     .position(myPlace.geometry)
+                    .icon(
+                        BitmapHelper.vectorToBitmap(
+                            this,
+                            R.drawable.ic_baseline_near_me_24, color
+                        )
+                    )
             )
 
             marker?.tag = myPlace
@@ -133,16 +155,38 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    private fun initClustering(googleMap: GoogleMap) {
+        clusterManager = ClusterManager<MyPlace>(this, googleMap)
+
+        if (clusterManager != null) {
+            clusterManager!!.renderer =
+                MyClusterRenderer(
+                    this,
+                    googleMap,
+                    clusterManager!!
+                )
+            clusterManager?.setOnClusterItemClickListener {
+                addCircle(it, googleMap)
+            }
+
+            //clusterManager?.markerCollection?.setInfoWindowAdapter(com.vano.map.google.adapter.MarkerInfoWindowAdapter(this))
+
+            googleMap.setOnCameraIdleListener {
+                clusterManager!!.onCameraIdle()
+            }
+        }
+    }
+
+
     @SuppressLint("MissingPermission")
     private fun initMap() {
-        var cameraPosition: CameraPosition? = null
+        val mapOptions =
+            GoogleMapOptions()
+                //.mapType(GoogleMap.MAP_TYPE_HYBRID)
+                .compassEnabled(true)
+                .zoomControlsEnabled(true)
 
-        mapFragment = SupportMapFragment.newInstance()
-        fusedLocationClient?.lastLocation?.addOnSuccessListener {
-            if (it != null)
-                cameraPosition =
-                    CameraPosition.fromLatLngZoom(LatLng(it.latitude, it.longitude), ZOOM)
-        }
+        mapFragment = SupportMapFragment.newInstance(mapOptions)
 
         if (mapFragment != null) {
             supportFragmentManager
@@ -152,12 +196,22 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             mapFragment!!.getMapAsync {
                 it.isMyLocationEnabled = true
-                if (cameraPosition != null)
-                    it.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition!!))
-                it.setInfoWindowAdapter(MarkerInfoWindowAdapter(this))
+                /*it.mapType = GoogleMap.MAP_TYPE_HYBRID
+                it.uiSettings.isZoomControlsEnabled = true*/
+
+                it.setOnMapLoadedCallback {
+                    moveCameraToUserLocation(it)
+                }
+                //it.moveCamera(CameraUpdateFactory.newLatLng(LatLng(0.0,0.0)))
+                /*it.setInfoWindowAdapter(MarkerInfoWindowAdapter(this))
                 setMarkerClick(it)
+                 */
+                initClustering(it)
                 it.setOnMapClickListener { position ->
-                    addMarker(MyPlace(geometry = position))
+                    //addMarker(MyPlace(geometry = position))
+
+                    clusterManager?.addItem(MyPlace(geometry = position))
+                    clusterManager?.cluster()
                 }
             }
         } else {
@@ -165,16 +219,41 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    private fun moveCameraToUserLocation(
+        googleMap: GoogleMap
+    ) {
+        var cameraPosition: CameraPosition? = null
+
+        fusedLocationClient?.lastLocation?.addOnSuccessListener {
+            if (it != null)
+                cameraPosition =
+                    CameraPosition.fromLatLngZoom(LatLng(it.latitude, it.longitude), ZOOM)
+        }
+        if (cameraPosition != null)
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition!!))
+    }
+
     private fun setMarkerClick(it: GoogleMap) {
         it.setOnMarkerClickListener { marker ->
-            circle?.remove()
-            val circleOptions = CircleOptions().center(marker.position).radius(100000.0)
-                .fillColor(R.color.red)
-                .strokeColor(R.color.primary)
-
-            circle = it.addCircle(circleOptions)
+            if (marker.tag is MyPlace) {
+                addCircle(marker.tag as MyPlace, it)
+            }
             false
         }
+    }
+
+    private fun addCircle(
+        place: MyPlace,
+        it: GoogleMap
+    ): Boolean {
+        circle?.remove()
+        val circleOptions = CircleOptions().center(place.geometry).radius(1000.0)
+            .fillColor(R.color.red)
+            .strokeColor(R.color.primary)
+
+        circle = it.addCircle(circleOptions)
+        return false
     }
 
     private fun checkPermissions() {
@@ -193,9 +272,6 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
                 ), 101
             )
         }
-    }
-
-    override fun onMapReady(map: GoogleMap) {
     }
 
     override fun onStart() {
@@ -217,5 +293,4 @@ class GoogleMapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onResume()
         mapFragment?.onResume()
     }
-
 }

@@ -13,3 +13,5 @@ local.properties
 /app/sampledata/
 /app/src/main/res/values/strings.xml
 /app/src/main/res/values-ru/strings.xml
+/app/src/main/java/com/vano/map/yandex/test/TestActivity.kt
+/app/src/main/res/layout/activity_test.xml

@@ -1,7 +1,10 @@
 package com.vano.map.yandex.activity
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.vano.map.yandex.fragment.YandexMapFragment
 import com.vano.myrestaurant.R
@@ -24,6 +27,7 @@ class YandexMapActivity : AppCompatActivity() {
 
         setContentView(binding?.root)
 
+        checkPermissions()
         insertFragment(YandexMapFragment())
     }
 
@@ -32,6 +36,24 @@ class YandexMapActivity : AppCompatActivity() {
 
         transaction.add(R.id.map_container, fragment)
         transaction.commit()
+    }
+
+    private fun checkPermissions() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ), 101
+            )
+        }
     }
 
 }
