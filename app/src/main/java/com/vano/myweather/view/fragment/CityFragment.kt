@@ -16,6 +16,7 @@ import com.vano.myweather.model.entity.City
 import com.vano.myweather.model.state.CityState
 import com.vano.myweather.viewmodel.CityViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import org.jetbrains.anko.support.v4.toast
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -80,11 +81,7 @@ class CityFragment @Inject constructor() : Fragment() {
                 }
                 is CityState.ErrorCityState -> {
                     progressBar?.visibility = View.GONE
-                    Toast.makeText(
-                        requireContext(),
-                        it.errorMessage,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toast(it.errorMessage)
                 }
             }
         }

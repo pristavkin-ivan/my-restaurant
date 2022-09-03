@@ -1,1 +1,17 @@
+*.iml
+.gradle
+/gradle
+/local.properties
+/.idea
+.DS_Store
 /build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+/app/libs/
+/app/sampledata/
+/app/src/main/res/values/strings.xml
+/app/src/main/res/values-ru/strings.xml
+/app/src/main/java/com/vano/map/yandex/test/TestActivity.kt
+/app/src/main/res/layout/activity_test.xml

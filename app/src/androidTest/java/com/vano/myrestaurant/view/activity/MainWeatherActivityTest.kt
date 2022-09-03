@@ -16,9 +16,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MainWeatherActivityTest {
 
-    private val testCity = City(
-        "Town", 24.4, "clear sky", 50, 25.0
-    )
+    companion object {
+        val TEST_CITY = City(
+            "Town", 24.4, "clear sky", 50, 25.0
+        )
+    }
 
     @Test
     fun test_that_cityIsEmpty() {
@@ -37,9 +39,10 @@ class MainWeatherActivityTest {
             scenario.onActivity { activity: MainWeatherActivity ->
                 val tempField = activity.findViewById<TextView>(R.id.t1)
 
-                activity.fillInfo(testCity)
+                activity.fillInfo(TEST_CITY)
                 Assert.assertTrue(tempField.text.toString().length > 1)
             }
         }
     }
+
 }

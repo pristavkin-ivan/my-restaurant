@@ -15,6 +15,8 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
+import org.json.JSONObject
+import org.json.JSONTokener
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -25,12 +27,24 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import retrofit2.Response
+import java.io.File
+import java.io.FileReader
 
 @ExperimentalCoroutinesApi
 class CityViewModelTest {
 
     companion object {
         const val TEST_CITY_NAME = "Minsk"
+        const val FILE_PATH = "D:\\AndroidStudioProjects\\MyRestaurant"
+        const val FILE_NAME = "Minsk.json"
+        const val WEATHER_KEY = "weather"
+        const val DESCRIPTION = "description"
+        const val MAIN = "main"
+        const val TEMPERATURE = "temp"
+        const val NAME = "name"
+        const val FEELS_LIKE = "feels_like"
+        const val HUMIDITY = "humidity"
+        const val FIRST_ELEMENT = 0
     }
 
     @get:Rule
@@ -45,6 +59,7 @@ class CityViewModelTest {
     }
 
     private lateinit var cityViewModel: CityViewModel
+    private lateinit var cityViewModelWithRepository: CityViewModel
     private lateinit var repository: CityRepository
     private lateinit var workingRepository: CityRepository
     private lateinit var observer: Observer<City>
@@ -58,10 +73,17 @@ class CityViewModelTest {
         repository = mock()
         observer = mock()
         application = mock()
-        workingRepository = CityRepository(mock(), mock()
-            , RetrofitModule.getRetrofitInstance().create(WeatherApi::class.java))
-        cityViewModel = CityViewModel(repository, coroutineRule.dispatchersWrapper, testSchedulers,
-            application)
+        workingRepository = CityRepository(
+            mock(), mock(), RetrofitModule.getRetrofitInstance().create(WeatherApi::class.java)
+        )
+        cityViewModel = CityViewModel(
+            repository, coroutineRule.dispatchersWrapper, testSchedulers,
+            application
+        )
+        cityViewModelWithRepository = CityViewModel(
+            workingRepository, coroutineRule.dispatchersWrapper, testSchedulers,
+            application
+        )
     }
 
     @Test
@@ -86,11 +108,39 @@ class CityViewModelTest {
 
     @Test
     fun getObservableCityTest() {
-        whenever(repository.getCityRx(TEST_CITY_NAME)).thenReturn(workingRepository.getCityRx(
-            TEST_CITY_NAME))
+        whenever(repository.getCityRx(TEST_CITY_NAME)).thenReturn(
+            workingRepository.getCityRx(
+                TEST_CITY_NAME
+            )
+        )
         cityViewModel.getObservableCity(TEST_CITY_NAME)
             .test()
             .assertComplete()
+    }
+
+    @Test
+    fun testJsonDeserializer() {
+        cityViewModelWithRepository.getObservableCity(TEST_CITY_NAME).test()
+            .assertValue(getCityFromJsonFile())
+    }
+
+    private fun getCityFromJsonFile(): City {
+        val readText: String
+
+        FileReader(File(FILE_PATH, FILE_NAME)).use {
+            readText = it.readText()
+        }
+
+        val json = JSONObject(JSONTokener(readText))
+        val name = json.getString(NAME)
+        val description = json.getJSONArray(WEATHER_KEY).getJSONObject(FIRST_ELEMENT)
+            .getString(DESCRIPTION)
+        val main = json.getJSONObject(MAIN)
+        val temp = main.getDouble(TEMPERATURE)
+        val feels = main.getDouble(FEELS_LIKE)
+        val humidity = main.getInt(HUMIDITY)
+
+        return City(name, temp, description, humidity, feels)
     }
 
 }

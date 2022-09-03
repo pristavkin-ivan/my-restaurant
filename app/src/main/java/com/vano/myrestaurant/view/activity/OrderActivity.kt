@@ -37,9 +37,9 @@ class OrderActivity : AppCompatActivity() {
     }
 
     private fun configureFAB() {
-        val floatingButton = findViewById<FloatingActionButton>(R.id.submit)
+        val floatingButton = binding?.submit
 
-        floatingButton.setOnClickListener {
+        floatingButton?.setOnClickListener {
             binding?. let {
                 val foodSpinner = it.foodSpinner
                 val drinkSpinner = it.drinkSpinner
