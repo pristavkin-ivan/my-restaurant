@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/feels_old"
+        android:layout_width="122dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="36dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toEndOf="@+id/feels"
+        app:layout_constraintTop_toBottomOf="@+id/hum_old" />
+
+    <TextView
+        android:id="@+id/hum_old"
+        android:layout_width="121dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/hum"
+        app:layout_constraintTop_toBottomOf="@+id/descr_old" />
+
+    <TextView
+        android:id="@+id/descr_old"
+        android:layout_width="121dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="28dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toEndOf="@+id/descr"
+        app:layout_constraintTop_toBottomOf="@+id/temp_old" />
+
+    <TextView
+        android:id="@+id/temp_old"
+        android:layout_width="119dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="28dp"
+        android:textColor="@color/red"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/temp"
+        app:layout_constraintTop_toBottomOf="@+id/city_name" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="82dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/feels"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/feels"
+        app:layout_constraintHorizontal_bias="0.532"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="81dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/humidity"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="91dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/description"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/city_name"
+        android:layout_width="306dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/feels"
+        android:layout_width="122dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="36dp"
+        app:layout_constraintStart_toStartOf="@+id/hum"
+        app:layout_constraintTop_toBottomOf="@+id/hum" />
+
+    <TextView
+        android:id="@+id/hum"
+        android:layout_width="121dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toStartOf="@+id/descr"
+        app:layout_constraintTop_toBottomOf="@+id/descr" />
+
+    <TextView
+        android:id="@+id/descr"
+        android:layout_width="121dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toStartOf="@+id/temp"
+        app:layout_constraintTop_toBottomOf="@+id/temp" />
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toBottomOf="@+id/city_name" />
+
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="129dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/update"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/feels" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="78dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/temp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/city_name" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

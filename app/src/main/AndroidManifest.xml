@@ -1,43 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.vano.myrestaurant">
 
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
     <application
+        android:name="com.vano.myweather.app.WeatherApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="My weather"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyRestaurant">
         <activity
-            android:name=".controller.activity.OrdersActivity"
-            android:exported="true"
-            android:parentActivityName=".controller.activity.MainActivity"/>
-        <activity
-            android:name=".controller.activity.FavoriteFoodActivity"
-            android:exported="true"
-            android:parentActivityName=".controller.activity.MainActivity" />
-        <activity
-            android:name=".controller.activity.OrderActivity"
-            android:exported="true"
-            android:parentActivityName=".controller.activity.MainActivity" />
-        <activity
-            android:name=".controller.activity.DrinkDetailActivity"
-            android:exported="true"
-            android:parentActivityName=".controller.activity.MainActivity" />
-        <activity
-            android:name=".controller.activity.FoodDetailActivity"
-            android:exported="true"
-            android:parentActivityName=".controller.activity.MainActivity" />
-        <activity
-            android:name=".controller.activity.MainActivity"
+            android:name="com.vano.photo.PhotoViewTestActivity"
             android:exported="true">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name="com.vano.map.yandex.test.TestActivity"
+            android:exported="true">
+
+            <!--
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        <activity
+            android:name="com.vano.map.google.activity.GoogleMapActivity"
+            android:exported="true">
+
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name="com.vano.map.yandex.activity.YandexMapActivity"
+            android:exported="true">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name="com.vano.myweather.view.activity.CitiesActivity"
+            android:exported="true"
+            android:parentActivityName="com.vano.myweather.view.activity.MainWeatherActivity" />
+        <activity
+            android:name="com.vano.myweather.view.activity.MainWeatherActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.OrdersActivity"
+            android:exported="true"
+            android:parentActivityName=".view.activity.MainActivity" />
+        <activity
+            android:name=".view.activity.FavoriteFoodActivity"
+            android:exported="true"
+            android:parentActivityName=".view.activity.MainActivity" />
+        <activity
+            android:name=".view.activity.OrderActivity"
+            android:exported="true"
+            android:parentActivityName=".view.activity.MainActivity" />
+        <activity
+            android:name=".view.activity.DrinkDetailActivity"
+            android:exported="true"
+            android:parentActivityName=".view.activity.MainActivity" />
+        <activity
+            android:name=".view.activity.FoodDetailActivity"
+            android:exported="true"
+            android:parentActivityName=".view.activity.MainActivity" />
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:exported="true">
+
+            <!--
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
+            -->
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
     </application>
 
 </manifest>

@@ -5,4 +5,6 @@
     <color name="accent">#06130D</color>
     <color name="white">#FFFCFC</color>
     <color name="card_background">#D4D3D5</color>
+    <color name="black">#000000</color>
+    <color name="red">#F44336</color>
 </resources>
